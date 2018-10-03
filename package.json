@@ -1,23 +1,54 @@
 {
-  "name": "aws-nodejs-typescript",
+  "name": "ecs-disaster-recovery",
   "version": "1.0.0",
-  "description": "Serverless webpack example using Typescript",
+  "description": "Handles EC2 Machine Shutdown",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "package:dev": "serverless package --stage dev",
+    "deploy:dev": "serverless deploy --stage dev",
+    "deploy:prod": "serverless deploy --stage prod",
+    "test": "jest --no-cache",
+    "test:unit": "jest --no-cache --verbose",
+    "test:coverage": "jest --no-cache --verbose --coverage --color true",
+    "watch:unit": "jest --no-cache --verbose --watchAll",
+    "watch:coverage": "jest --no-cache --verbose --coverage --color true --watchAll"
   },
+  "license": "MIT",
   "dependencies": {
-    "jest": "^23.6.0"
+    "@aws/dynamodb-data-mapper": "^0.7.3",
+    "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.1",
-    "@types/node": "^8.0.57",
-    "serverless-webpack": "^5.1.1",
-    "source-map-support": "^0.5.6",
-    "ts-loader": "^4.2.0",
-    "typescript": "^2.9.2",
-    "webpack": "^4.5.0"
+    "@types/aws-lambda": "^0.0.33",
+    "@types/jest": "^22.2.3",
+    "@types/node": "^9.4.7",
+    "aws-lambda": "^0.1.2",
+    "aws-sdk": "^2.327.0",
+    "jest": "^22.4.2",
+    "jest-html-reporter": "^0.5.3",
+    "serverless": "^1.30.3",
+    "serverless-plugin-typescript": "^1.1.5",
+    "ts-jest": "^22.4.1",
+    "typescript": "^2.7.2"
   },
-  "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
-  "license": "MIT"
+  "jest": {
+    "testResultsProcessor": "./node_modules/jest-html-reporter",
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "testURL": "http://localhost",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
 }

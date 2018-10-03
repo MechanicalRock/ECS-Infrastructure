@@ -1,0 +1,25 @@
+<html><head><meta charset="utf-8"/><title>Test suite</title><style type="text/css">
+	html,body {font-family:Arial,Helvetica,sans-serif;font-size:1rem;margin:0;padding:0;color:#333;}
+	body {padding:1rem;2rem;font-size:0.85rem;}
+	#title {margin-top: 0;}
+	#timestamp {font-weight:bold;color:#666;margin-bottom:0.5rem;}
+	#summary {color:#999;margin-bottom:1em;}
+	.suite-info {padding:1em;background-color:#eee;border-bottom:2px solid #999;font-weight:bold;color:#999;}
+	.suite-table {width:100%;font-size:0.85rem;margin-bottom:1em;}
+	.suite-table td {padding:0.5rem;}
+	.suite-table tr.passed {background-color:#DFF2BF;color:#4F8A10;}
+	.suite-table tr.pending {background-color:#FEEFB3;color:#9F6000;}
+	.suite-table tr.failed {background-color:#FFBABA;color:#D8000C;}
+	.suite-table td {font-size:0.85rem;border-bottom:1px solid #aaa;vertical-align:top;}
+	.suite-table td.suite {font-weight:bold;width:20%;}
+	.suite-table td.test {font-style:italic;width:60%;}
+	.suite-table td.test .failureMsg {font-weight:bold;font-size:0.7rem;}
+	.suite-table td.result {width:20%;text-align:right;}
+</style></head><body><h1 id="title">Test suite</h1></body><div id="timestamp">Start: 03/10/2018, 21:57:07</div><div id="summary">
+		12 tests /
+		12 passed /
+		0 failed /
+		0 pending
+	</div><div class="suite-info">
+			/Users/josh/Austal/ecs-disaster-recovery/tests/autoScaleUp.test.tsx (0.071s)
+		</div><table class="suite-table" cellspacing="0" cellpadding="0"><tr class="passed"><td class="suite">When receiving an event from SNS</td><td class="test">We issue a call to get the status of the EC2</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS</td><td class="test">We issue a get item call to DynamoDB</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS</td><td class="test">We issue a call to get the status of the EBS volume</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ</td><td class="test">We issue a call to attach the volume to the instance</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ</td><td class="test">The call to attach the volume is with the Device stored in Dynamo</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ &gt; If the attach request fails</td><td class="test">A message is sent to a SNS topic</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ &gt; If the attach request fails</td><td class="test">The publish event is sent to the correct Topic ARN</td><td class="result">passed in 0.005s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ &gt; If the attach request fails</td><td class="test">The callback is invoked with an error</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in the same AZ &gt; If the attach request succeeds</td><td class="test">The callback is invoked with no error</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in different AZs</td><td class="test">We issue a call to snapshot the current master volume</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in different AZs</td><td class="test">We issue a call to create a volume from the snapshot</td><td class="result">passed in 0.002s</td></tr><tr class="passed"><td class="suite">When receiving an event from SNS &gt; When the instance and volume are in different AZs</td><td class="test">We issue a call to update the master volume in Dynamo</td><td class="result">passed in 0.001s</td></tr></table></html>

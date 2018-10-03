@@ -1,7 +1,6 @@
 service:
   name: ecs-disaster-recovery
 
-# Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
 
@@ -10,9 +9,35 @@ provider:
   runtime: nodejs8.10
 
 functions:
-  hello:
-    handler: handler.hello
+  ecs-disaster-recovery:
+    handler: autoScaleUp.handler
+    environment:
+      MASTER_VOLUME_TABLE: !Ref MasterVolumeTable
+      SUPPORT_SNS_TOPIC_ARN: !Ref SupportSNSTopic
     events:
-      - http:
-          method: get
-          path: hello
+      - sns: dispatch
+
+resources:
+  Resources:
+    MasterVolumeTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+        SSESpecification:
+          SSEEnabled: true
+
+    SupportSNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: ECS Support Topic
+        TopicName: ECS_Support_Topic

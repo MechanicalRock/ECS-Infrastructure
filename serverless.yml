@@ -18,7 +18,7 @@ functions:
       SUPPORT_SNS_TOPIC_ARN: {"Ref": SupportSNSTopic}
     events:
       - sns:
-          arn: {"ImportValue": "ecsDRInfrastructure-TopicArn"}
+          arn: arn:aws:sns:ap-southeast-2:598112752826:ECS_ASG_Topic
 
 resources:
   Resources:

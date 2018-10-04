@@ -17,6 +17,23 @@ Resources:
           LifecycleHookName: 'InstanceCreationLifeCycleHook'
           HeartbeatTimeout: 300
           NotificationTargetARN: !Ref SupportSNSTopic
+          RoleARN: !GetAtt LifecycleRole.Arn
+
+  LifecycleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path:
+      AssumeRolePolicyDocument:
+      Policies:
+        -
+          PolicyName: "Lifecycle Hook Role"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
 
   SupportSNSTopic:
     Type: AWS::SNS::Topic

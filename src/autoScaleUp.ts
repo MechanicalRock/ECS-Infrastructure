@@ -10,28 +10,36 @@ const client = new DynamoDB({region: process.env.REGION})
 const mapper = new DataMapper({client})
 
 export async function handler(event: SNSEvent, context: Context, callback: Callback) {
-  logger.info(`SNS event received: ${JSON.stringify(event)}`)
-  const message = JSON.parse(event.Records[0].Sns.Message)
-  const instanceId = message.EC2InstanceId.Value
-  let instance = await getInstanceData(instanceId)
-  let volumeItem = await getVolumeItem()
-  let volume = await getVolumeData(volumeItem.volumeId)
-  if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
-    let request = ec2.attachVolume({
-      Device: volumeItem.device,
-      InstanceId: instanceId,
-      VolumeId: volumeItem.volumeId
-    }).promise()
-    try {
-      await request
+  let instanceId
+  let volumeItem
+  try {
+    logger.info(`SNS event received: ${JSON.stringify(event)}`)
+    const message = JSON.parse(event.Records[0].Sns.Message)
+    instanceId = message.EC2InstanceId.Value
+    let instance = await getInstanceData(instanceId)
+    volumeItem = await getVolumeItem()
+    let volume = await getVolumeData(volumeItem.volumeId)
+    if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
+      let request = ec2.attachVolume({
+        Device: volumeItem.device,
+        InstanceId: instanceId,
+        VolumeId: volumeItem.volumeId
+      }).promise()
+      try {
+        await request
+        callback(null, 'EC2 machine has been correctly provisioned')
+      } catch (error) {
+        console.log(error)
+        await publishErrorToSNS(instanceId, volumeItem.volumeId)
+        callback(error, null)
+      }
+    } else {
+      await createNewVolume(volumeItem, instance.Placement!.AvailabilityZone!)
       callback(null, 'EC2 machine has been correctly provisioned')
-    } catch (error) {
-      console.log(error)
-      await publishErrorToSNS(instanceId, volumeItem.volumeId)
-      callback(error, null)
     }
-  } else {
-    await createNewVolume(volumeItem, instance.Placement!.AvailabilityZone!)
+  } catch (error) {
+    await publishErrorToSNS(instanceId, volumeItem)
+    callback(error, null)
   }
 }
 
@@ -60,10 +68,16 @@ async function getVolumeData(id: string) {
   return data.Volumes![0]
 }
 
-async function publishErrorToSNS(instanceId: string, volumeId: string) {
+async function publishErrorToSNS(instanceId: string, volume: VolumeModel) {
   const SNS = new AWS.SNS()
+  let message
+  if (volume) {
+    message = `Error attaching volume to EC2 machine, instanceId: ${instanceId}, volumeId: ${volume.volumeId}`
+  } else {
+    `Error attaching volume to EC2 machine, instanceId: ${instanceId}, unknown volume`
+  }
   await SNS.publish({
-    Message: `Error attaching volume to EC2 machine, instanceId: ${instanceId}, volumeId: ${volumeId}`,
+    Message: message,
     TopicArn: process.env.SUPPORT_SNS_TOPIC_ARN
   }).promise()
 }

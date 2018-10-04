@@ -9,6 +9,7 @@ Resources:
     DependsOn:
       - LifecycleRole
       - ASGSNSTopic
+      - ASGSNSTopicPolicy
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AvailabilityZones: !GetAZs ''

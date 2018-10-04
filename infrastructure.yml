@@ -31,19 +31,10 @@ Resources:
         - Action: ['sts:AssumeRole']
           Effect: Allow
           Principal:
-            Service: [cloudformation.amazonaws.com]
+            Service: [ec2.amazonaws.com]
         Version: '2012-10-17'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AutoScalingNotificationAccessRole
-      Path: /
-      Policies:
-        - PolicyName: CloudFormationRole
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Action: '*'
-                Effect: Allow
-                Resource: '*'
 
   ASGSNSTopic:
     Type: AWS::SNS::Topic

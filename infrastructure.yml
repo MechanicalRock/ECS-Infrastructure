@@ -20,20 +20,24 @@ Resources:
           RoleARN: !GetAtt LifecycleRole.Arn
 
   LifecycleRole:
-    Type: AWS::IAM::Role
+    Type: 'AWS::IAM::Role'
     Properties:
-      Path:
       AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [cloudformation.amazonaws.com]
+        Version: '2012-10-17'
+      Path: /
       Policies:
-        -
-          PolicyName: "Lifecycle Hook Role"
+        - PolicyName: CloudFormationRole
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
-              -
-                Effect: "Allow"
-                Action: "*"
-                Resource: "*"
+              - Action: '*'
+                Effect: Allow
+                Resource: '*'
 
   SupportSNSTopic:
     Type: AWS::SNS::Topic

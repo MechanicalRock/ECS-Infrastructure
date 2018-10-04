@@ -17,11 +17,12 @@
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
-    "serverless-webpack": "^5.2.0",
-    "webpack": "^4.20.2",
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "serverless-webpack": "^5.2.0",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
     "@types/aws-lambda": "^0.0.33",
     "@types/jest": "^22.2.3",
     "@types/node": "^9.4.7",

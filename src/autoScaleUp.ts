@@ -15,14 +15,14 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
   try {
     logger.info(`SNS event received: ${JSON.stringify(event)}`)
     const message = JSON.parse(event.Records[0].Sns.Message)
-    instanceId = message.EC2InstanceId.Value
+    instanceId = message.EC2InstanceId
     let instance = await getInstanceData(instanceId)
     volumeItem = await getVolumeItem()
     let volume = await getVolumeData(volumeItem.volumeId)
     if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
       const params = {
         Device: volumeItem.device,
-        InstanceId: instanceId,
+        InstanceId: instance.InstanceId!,
         VolumeId: volumeItem.volumeId
       }
       logger.info(`Parameters sent to attachVolume: ${JSON.stringify(params)}`)
@@ -34,7 +34,7 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
         callback(null, 'EC2 machine has been correctly provisioned')
       } catch (error) {
         logger.error(`Error received from attachVolume: ${JSON.stringify(error)}`)
-        await publishErrorToSNS(instanceId, volumeItem.volumeId)
+        await publishErrorToSNS(instance.InstanceId!, volumeItem.volumeId)
         callback(error, null)
       }
     } else {

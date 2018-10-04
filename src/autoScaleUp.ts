@@ -38,17 +38,19 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
       callback(null, 'EC2 machine has been correctly provisioned')
     }
   } catch (error) {
+    logger.error(`Error thrown, publishing to SNS and invoking the callback ${JSON.stringify(error)}`)
     await publishErrorToSNS(instanceId, volumeItem)
     callback(error, null)
   }
 }
 
 async function getInstanceData(id: string): Promise<AWS.EC2.Instance> {
-  const request = ec2.describeInstances({
+  const params = {
     InstanceIds: [id]
-  }).promise()
-  let data = await request
-  console.log(data)
+  }
+  logger.info(`Parameters sent to describeInstances: ${JSON.stringify(params)}`)
+  const data = await ec2.describeInstances(params).promise()
+  logger.info(`Response from describeInstances: ${JSON.stringify(data)}`)
   return data.Reservations![0].Instances![0]
 }
 
@@ -56,15 +58,17 @@ async function getVolumeItem() {
   let model = new VolumeModel()
   model.id = '0'
   model = await mapper.get(model)
+  logger.info(`Response from getItem: ${JSON.stringify(model)}`)
   return model
 }
 
 async function getVolumeData(id: string) {
-  const request = ec2.describeVolumes({
+  const params = {
     VolumeIds: [id]
-  }).promise()
-  let data = await request
-  console.log(data)
+  }
+  logger.info(`Parameters sent to describeVolumes: ${JSON.stringify(params)}`)
+  let data = await ec2.describeVolumes(params).promise()
+  logger.info(`Response from describeVolumes: ${JSON.stringify(data)}`)
   return data.Volumes![0]
 }
 
@@ -76,23 +80,30 @@ async function publishErrorToSNS(instanceId: string, volume: VolumeModel) {
   } else {
     `Error attaching volume to EC2 machine, instanceId: ${instanceId}, unknown volume`
   }
-  await SNS.publish({
+  const params = {
     Message: message,
     TopicArn: process.env.SUPPORT_SNS_TOPIC_ARN
-  }).promise()
+  }
+  logger.info(`Parameters sent to SNS.publish: ${JSON.stringify(params)}`)
+  let data = await SNS.publish(params).promise()
+  logger.info(`Response from SNS.publish: ${JSON.stringify(data)}`)
 }
 
 async function createNewVolume(volumeModel: VolumeModel, az: string) {
-  const snapshotRequest = ec2.createSnapshot({
+  const snapshotParams = {
     VolumeId: volumeModel.volumeId
-  }).promise()
-  let snapshot = await snapshotRequest
+  }
+  logger.info(`Parameters sent createSnapshot: ${JSON.stringify(snapshotParams)}`)
+  let snapshot = await ec2.createSnapshot(snapshotParams).promise()
+  logger.info(`Response from createSnapshot: ${JSON.stringify(snapshot)}`)
 
-  const volumeRequest = ec2.createVolume({
+  const volumeParams = {
     AvailabilityZone: az,
     SnapshotId: snapshot.SnapshotId!
-  }).promise()
-  let volume = await volumeRequest
+  }
+  logger.info(`Parameters sent createVolume: ${JSON.stringify(volumeParams)}`)
+  let volume = await ec2.createVolume(volumeParams).promise()
+  logger.info(`Response from createVolume: ${JSON.stringify(volumeParams)}`)
 
   await updateMasterVolumeInDynamo(volume, volumeModel)
 }

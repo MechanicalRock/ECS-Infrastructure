@@ -6,6 +6,9 @@ Resources:
       InstanceType: t3.small
 
   AutoScalingGroup:
+    DependsOn:
+      - LifecycleRole
+      - ASGSNSTopic
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AvailabilityZones: !GetAZs ''
@@ -16,7 +19,7 @@ Resources:
         - LifecycleTransition: 'autoscaling:EC2_INSTANCE_LAUNCHING'
           LifecycleHookName: 'InstanceCreationLifeCycleHook'
           HeartbeatTimeout: 300
-          NotificationTargetARN: !Ref SupportSNSTopic
+          NotificationTargetARN: !Ref ASGSNSTopic
           RoleARN: !GetAtt LifecycleRole.Arn
 
   LifecycleRole:
@@ -39,7 +42,7 @@ Resources:
                 Effect: Allow
                 Resource: '*'
 
-  SupportSNSTopic:
+  ASGSNSTopic:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: ECS AutoScaling Group Topic

@@ -6,7 +6,9 @@ plugins:
 
 provider:
   name: aws
+  region: ap-southeast-2
   runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
 
 functions:
   ecs-disaster-recovery:

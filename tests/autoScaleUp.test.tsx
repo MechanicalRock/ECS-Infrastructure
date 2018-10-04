@@ -199,49 +199,8 @@ function snsEventRecordFactory(): SNSEvent {
           'Signature': 'EXAMPLE',
           'SigningCertUrl': 'EXAMPLE',
           'MessageId': '95df01b4-ee98-5cb9-9903-4c221d41eb5e',
-          'Message': 'Hello from SNS!',
-          'MessageAttributes': {
-            'Service': {
-              'Type': 'String',
-              'Value': 'AWS Auto Scaling'
-            },
-            'Time': {
-              'Type': 'String',
-              'Value': '2016-09-30T20:42:11.305Z'
-            },
-            'RequestId': {
-              'Type': 'String',
-              'Value': '18b2ec17-3e9b-4c15-8024-ff2e8ce8786a'
-            },
-            'LifecycleActionToken': {
-              'Type': 'String',
-              'Value': '71514b9d-6a40-4b26-8523-05e7ee35fa40'
-            },
-            'AccountId': {
-              'Type': 'String',
-              'Value': '123456789012'
-            },
-            'AutoScalingGroupName': {
-              'Type': 'String',
-              'Value': 'my-asg'
-            },
-            'LifecycleHookName': {
-              'Type': 'String',
-              'Value': 'my-hook'
-            },
-            'EC2InstanceId': {
-              'Type': 'String',
-              'Value': 'i-0598c7d356eba48d7'
-            },
-            'LifecycleTransition': {
-              'Type': 'String',
-              'Value': 'autoscaling:EC2_INSTANCE_LAUNCHING'
-            },
-            'NotificationMetadata': {
-              'Type': 'String',
-              'Value': 'null'
-            }
-          },
+          'Message': '{"LifecycleHookName":"ecsDRInfrastructure-LifecycleHook-1FN372VKI0YZ1","AccountId":"598112752826","RequestId":"a76598fa-4c59-2009-adf5-af9b820dc29d","LifecycleTransition":"autoscaling:EC2_INSTANCE_LAUNCHING","AutoScalingGroupName":"ecsDRInfrastructure-AutoScalingGroup-1BPXLUC3HD4RW","Service":"AWS Auto Scaling","Time":"2018-10-04T10:15:51.860Z","EC2InstanceId":"i-06fc91a93c8d2534e","LifecycleActionToken":"0278796d-531e-44a7-afce-4dffa48cdb59"}',
+          'MessageAttributes': {},
           'Type': 'Notification',
           'UnsubscribeUrl': 'EXAMPLE',
           'TopicArn': 'fakeTopicArn',

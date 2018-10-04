@@ -11,7 +11,8 @@ const mapper = new DataMapper({client})
 
 export async function handler(event: SNSEvent, context: Context, callback: Callback) {
   logger.info(`SNS event received: ${JSON.stringify(event)}`)
-  const instanceId = event.Records[0].Sns.MessageAttributes.EC2InstanceId.Value
+  const message = JSON.parse(event.Records[0].Sns.Message)
+  const instanceId = message.EC2InstanceId.Value
   let instance = await getInstanceData(instanceId)
   let volumeItem = await getVolumeItem()
   let volume = await getVolumeData(volumeItem.volumeId)

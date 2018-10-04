@@ -10,6 +10,7 @@ const client = new DynamoDB({region: process.env.REGION})
 const mapper = new DataMapper({client})
 
 export async function handler(event: SNSEvent, context: Context, callback: Callback) {
+  logger.info(`SNS event received: ${JSON.stringify(event)}`)
   const instanceId = event.Records[0].Sns.MessageAttributes.EC2InstanceId.Value
   let instance = await getInstanceData(instanceId)
   let volumeItem = await getVolumeItem()

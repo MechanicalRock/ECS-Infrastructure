@@ -9,6 +9,13 @@ provider:
   region: ap-southeast-2
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ec2:*"
+        - "dynamodb:*"
+        - "sns:*"
+      Resource: "*"
 
 functions:
   ecs-disaster-recovery:

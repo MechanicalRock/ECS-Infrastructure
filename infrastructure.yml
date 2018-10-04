@@ -67,5 +67,4 @@ Outputs:
   TopicArn:
     Export:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'TopicArn']]
-    Type: String
     Value: !Ref ASGSNSTopic

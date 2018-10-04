@@ -12,6 +12,7 @@ phases:
 
   build:
     commands:
+      - sls remove
       - npm run test:unit
       - npm run test:coverage
       - npm run deploy:dev

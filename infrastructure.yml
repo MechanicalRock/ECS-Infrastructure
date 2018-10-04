@@ -47,3 +47,19 @@ Resources:
     Properties:
       DisplayName: ECS AutoScaling Group Topic
       TopicName: ECS_ASG_Topic
+
+  ASGSNSTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: ECS_ASG_Topic_Policy
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AllowLifecycleRole
+          Effect: Allow
+          Principal:
+            AWS: !GetAtt LifecycleRole.Arn
+          Action: sns:Publish
+          Resource: "*"
+      Topics:
+      - !Ref ASGSNSTopic

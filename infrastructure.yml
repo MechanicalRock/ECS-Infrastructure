@@ -59,7 +59,7 @@ Resources:
         - Sid: AllowLifecycleRole
           Effect: Allow
           Principal:
-            AWS: !GetAtt LifecycleRole.Arn
+            AWS: "*"
           Action: sns:Publish
           Resource: "*"
       Topics:

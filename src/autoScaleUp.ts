@@ -20,16 +20,20 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
     volumeItem = await getVolumeItem()
     let volume = await getVolumeData(volumeItem.volumeId)
     if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
-      let request = ec2.attachVolume({
+      const params = {
         Device: volumeItem.device,
         InstanceId: instanceId,
         VolumeId: volumeItem.volumeId
-      }).promise()
+      }
+      logger.info(`Parameters sent to attachVolume: ${JSON.stringify(params)}`)
+      let request = ec2.attachVolume(params).promise()
+
       try {
-        await request
+        let response = await request
+        logger.info(`Response from describeVolumes: ${JSON.stringify(response)}`)
         callback(null, 'EC2 machine has been correctly provisioned')
       } catch (error) {
-        console.log(error)
+        logger.error(`Error received from attachVolume: ${JSON.stringify(error)}`)
         await publishErrorToSNS(instanceId, volumeItem.volumeId)
         callback(error, null)
       }

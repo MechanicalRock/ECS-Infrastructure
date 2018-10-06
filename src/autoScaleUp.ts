@@ -120,8 +120,10 @@ async function createNewVolume(volumeModel: VolumeModel, az: string) {
 }
 
 async function updateMasterVolumeInDynamo(volume: PromiseResult<AWS.EC2.Volume, AWS.AWSError>, volumeModel: VolumeModel) {
-  let newVolumeModel = { ...volumeModel }
+  let newVolumeModel = new VolumeModel()
   newVolumeModel.volumeId = volume.VolumeId!
+  newVolumeModel.id = volumeModel.id
+  newVolumeModel.device = volumeModel.device
 
   logger.info(`Model to be updated in Dynamo: ${JSON.stringify(newVolumeModel)}`)
   newVolumeModel = await mapper.update(newVolumeModel)

@@ -66,6 +66,12 @@ async function getVolumeData(id: string) {
 
 async function attachVolume(volumeItem, instance, callback) {
   try {
+    const waitForParams = {
+      InstanceIds: [instance.InstanceId!]
+    }
+    logger.info(`Parameters sent to waitFor instanceRunning: ${JSON.stringify(waitForParams)}`)
+    let waitFor = await ec2.waitFor('instanceRunning', waitForParams).promise()
+    logger.info(`Response from waitFor instanceRunning: ${JSON.stringify(waitFor)}`)
     const params = {
       Device: volumeItem.device,
       InstanceId: instance.InstanceId!,

@@ -121,6 +121,11 @@ describe('When receiving an event from SNS', () => {
     expect(mockVolumesPromise).toHaveBeenCalled()
   })
   describe('When the instance and volume are in the same AZ', () => {
+    it('We issue a call to wait for the instance', async () => {
+      await handler(event, context, callback)
+
+      expect(mockWaitFor.mock.calls[0][0]).toBe('instanceRunning')
+    })
     it('We issue a call to attach the volume to the instance', async () => {
       await handler(event, context, callback)
 
@@ -205,6 +210,11 @@ describe('When receiving an event from SNS', () => {
       await handler(event, context, callback)
 
       expect(mockWaitFor.mock.calls[1]).not.toBe(undefined)
+    })
+    it('We issue a call to wait for the instance', async () => {
+      await handler(event, context, callback)
+
+      expect(mockWaitFor.mock.calls[2][0]).toBe('instanceRunning')
     })
     it('We issue a call to attach the volume', async () => {
       await handler(event, context, callback)

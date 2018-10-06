@@ -29,6 +29,7 @@ Resources:
       IamInstanceProfile: !Ref EC2InstanceProfile
       ImageId: ami-05b48eda7f92aadbe
       InstanceType: t2.small
+      KeyName: ecs-keypair
       UserData:
         Fn::Base64:
           Fn::Join: [

@@ -40,6 +40,12 @@ mockWaitFor.mockReturnValue({
   promise: mockWaitPromise
 })
 
+let mockSendCommand = jest.fn()
+let mockSendCommandPromise = jest.fn()
+mockSendCommand.mockReturnValue({
+  promise: mockSendCommandPromise
+})
+
 jest.mock('aws-sdk', () => {
   return {
     EC2: () => {
@@ -55,6 +61,11 @@ jest.mock('aws-sdk', () => {
     SNS: () => {
       return {
         publish: mockSNSPublish,
+      }
+    },
+    SSM: () => {
+      return {
+        sendCommand: mockSendCommand
       }
     }
   }
@@ -76,6 +87,7 @@ jest.mock('@aws/dynamodb-data-mapper', () => {
 process.env.MASTER_VOLUME_TABLE = 'fakeTableName'
 process.env.REGION = 'ap-southeast-2'
 process.env.SUPPORT_SNS_TOPIC_ARN = 'fakeSNSTopicArn'
+process.env.DOCUMENT_NAME = 'fakeDocument'
 
 import { handler } from '../src/autoScaleUp';
 import { SNSEvent, Context } from 'aws-lambda';
@@ -142,6 +154,11 @@ describe('When receiving an event from SNS', () => {
       })
     })
     describe('If the attach request succeeds', () => {
+      it('We send a command to mount the volume', async () => {
+        await handler(event, context, callback)
+
+        expect(mockSendCommandPromise).toHaveBeenCalled()
+      })
       it('The callback is invoked with no error', async () => {
         callback.mockClear()
 
@@ -187,6 +204,11 @@ describe('When receiving an event from SNS', () => {
       await handler(event, context, callback)
 
       expect(mockAttachPromise).toHaveBeenCalled()
+    })
+    it('We send a command to mount the volume', async () => {
+      await handler(event, context, callback)
+
+      expect(mockSendCommandPromise).toHaveBeenCalled()
     })
   })
 })

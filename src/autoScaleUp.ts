@@ -31,6 +31,14 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
       try {
         let response = await request
         logger.info(`Response from attachVolume: ${JSON.stringify(response)}`)
+        const commandParams = {
+          DocumentName: process.env.DOCUMENT_NAME!,
+          InstanceIds: [instance.InstanceId!]
+        }
+        logger.info(`Parameters sent to sendCommand: ${JSON.stringify(commandParams)}`)
+        let SSM = new AWS.SSM()
+        let ssmResponse = await SSM.sendCommand(commandParams).promise()
+        logger.info(`Response from sendCommand: ${JSON.stringify(ssmResponse)}`)
         callback(null, 'EC2 machine has been correctly provisioned')
       } catch (error) {
         logger.error(`Error received from attachVolume: ${JSON.stringify(error)}`)
@@ -47,6 +55,15 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
       logger.info(`Parameters sent to attachVolume: ${JSON.stringify(params)}`)
       let response = await ec2.attachVolume(params).promise()
       logger.info(`Response from attachVolume: ${JSON.stringify(response)}`)
+      const commandParams = {
+        DocumentName: process.env.DOCUMENT_NAME!,
+        InstanceIds: [instance.InstanceId!]
+      }
+      logger.info(`Parameters sent to sendCommand: ${JSON.stringify(commandParams)}`)
+      let SSM = new AWS.SSM()
+      let ssmResponse = await SSM.sendCommand(commandParams).promise()
+      logger.info(`Response from sendCommand: ${JSON.stringify(ssmResponse)}`)
+
       callback(null, 'EC2 machine has been correctly provisioned')
     }
   } catch (error) {

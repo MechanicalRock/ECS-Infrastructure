@@ -106,7 +106,7 @@ async function createNewVolume(volumeModel: VolumeModel, az: string) {
   }
   logger.info(`Parameters sent to waitFor: ${JSON.stringify(snapshotWaitParams)}`)
   let waitFor = await ec2.waitFor('snapshotCompleted', snapshotWaitParams).promise()
-  logger.info(`Response from waitFor: ${JSON.stringify(snapshot)}`)
+  logger.info(`Response from waitFor: ${JSON.stringify(waitFor)}`)
 
   const volumeParams = {
     AvailabilityZone: az,

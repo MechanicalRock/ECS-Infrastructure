@@ -26,6 +26,7 @@ functions:
     events:
       - sns:
           arn: arn:aws:sns:ap-southeast-2:598112752826:ECS_ASG_Topic
+    timeout: 300
 
 resources:
   Resources:

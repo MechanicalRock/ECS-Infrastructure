@@ -41,7 +41,7 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
         logger.info(`Response from sendCommand: ${JSON.stringify(ssmResponse)}`)
         callback(null, 'EC2 machine has been correctly provisioned')
       } catch (error) {
-        logger.error(`Error received from attachVolume: ${JSON.stringify(error)}`)
+        logger.error(`Error received from sendCommand: ${JSON.stringify(error)}`)
         await publishErrorToSNS(instance.InstanceId!, volumeItem.volumeId)
         callback(error, null)
       }

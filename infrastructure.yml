@@ -71,7 +71,7 @@ Resources:
         description: "Command document for mounting the EBS volume"
         mainSteps:
         - action: "aws:runShellScript"
-          name: "Mount EBS Volume"
+          name: "MountVolume"
           inputs:
             runCommand:
             - "mount /dev/xdvy /data"

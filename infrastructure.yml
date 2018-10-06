@@ -84,5 +84,6 @@ Outputs:
     Value: !Ref ASGSNSTopic
 
   DocumentName:
-    Name: !Join ['-', [!Ref 'AWS::StackName', 'Document']]
+    Export:
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'Document']]
     Value: !Ref SSMMountDocument

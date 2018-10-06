@@ -156,6 +156,7 @@ describe('When receiving an event from SNS', () => {
       mockVolumesPromise.mockReturnValueOnce(Promise.resolve(mockDescribeVolumesFactory('ap-southeast-1b')))
       mockSnapshotPromise.mockReturnValueOnce(Promise.resolve({SnapshotId: 'snap-066877671789bd71b'}))
       mockVolumePromise.mockReturnValueOnce(Promise.resolve(MOCK_GET_ITEM))
+      mockAttachPromise.mockClear()
     })
     it('We issue a call to snapshot the current master volume', async () => {
       await handler(event, context, callback)
@@ -181,6 +182,11 @@ describe('When receiving an event from SNS', () => {
       await handler(event, context, callback)
 
       expect(mockWaitFor.mock.calls[0][0]).toBe('snapshotCompleted')
+    })
+    it('We issue a call to attach the volume', async () => {
+      await handler(event, context, callback)
+
+      expect(mockAttachPromise).toHaveBeenCalled()
     })
   })
 })

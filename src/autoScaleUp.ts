@@ -30,7 +30,7 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
 
       try {
         let response = await request
-        logger.info(`Response from describeVolumes: ${JSON.stringify(response)}`)
+        logger.info(`Response from attachVolume: ${JSON.stringify(response)}`)
         callback(null, 'EC2 machine has been correctly provisioned')
       } catch (error) {
         logger.error(`Error received from attachVolume: ${JSON.stringify(error)}`)
@@ -38,7 +38,15 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
         callback(error, null)
       }
     } else {
-      await createNewVolume(volumeItem, instance.Placement!.AvailabilityZone!)
+      let volume = await createNewVolume(volumeItem, instance.Placement!.AvailabilityZone!)
+      const params = {
+        Device: volumeItem.device,
+        InstanceId: instance.InstanceId!,
+        VolumeId: volume.VolumeId!
+      }
+      logger.info(`Parameters sent to attachVolume: ${JSON.stringify(params)}`)
+      let response = await ec2.attachVolume(params).promise()
+      logger.info(`Response from attachVolume: ${JSON.stringify(response)}`)
       callback(null, 'EC2 machine has been correctly provisioned')
     }
   } catch (error) {
@@ -117,6 +125,8 @@ async function createNewVolume(volumeModel: VolumeModel, az: string) {
   logger.info(`Response from createVolume: ${JSON.stringify(volumeParams)}`)
 
   await updateMasterVolumeInDynamo(volume, volumeModel)
+
+  return volume
 }
 
 async function updateMasterVolumeInDynamo(volume: PromiseResult<AWS.EC2.Volume, AWS.AWSError>, volumeModel: VolumeModel) {

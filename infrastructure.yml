@@ -1,7 +1,32 @@
 Resources:
+
+  EC2IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: '/'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2IAMRole
+
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
+      IamInstanceProfile: !Ref EC2InstanceProfile
       ImageId: ami-05b48eda7f92aadbe
       InstanceType: t3.small
 

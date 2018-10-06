@@ -129,9 +129,9 @@ async function createNewVolume(volumeModel: VolumeModel, az: string) {
   const snapshotWaitParams = {
     SnapshotIds: [snapshot.SnapshotId!]
   }
-  logger.info(`Parameters sent to waitFor: ${JSON.stringify(snapshotWaitParams)}`)
+  logger.info(`Parameters sent to waitFor snapshotCompleted: ${JSON.stringify(snapshotWaitParams)}`)
   let waitFor = await ec2.waitFor('snapshotCompleted', snapshotWaitParams).promise()
-  logger.info(`Response from waitFor: ${JSON.stringify(waitFor)}`)
+  logger.info(`Response from waitFor snapshotCompleted: ${JSON.stringify(waitFor)}`)
 
   const volumeParams = {
     AvailabilityZone: az,
@@ -140,6 +140,13 @@ async function createNewVolume(volumeModel: VolumeModel, az: string) {
   logger.info(`Parameters sent createVolume: ${JSON.stringify(volumeParams)}`)
   let volume = await ec2.createVolume(volumeParams).promise()
   logger.info(`Response from createVolume: ${JSON.stringify(volumeParams)}`)
+
+  const volumeWaitParams = {
+    VolumeIds: [volume.VolumeId!]
+  }
+  logger.info(`Parameters sent to waitFor volumeAvailable: ${JSON.stringify(volumeWaitParams)}`)
+  let waitForVolume = await ec2.waitFor('volumeAvailable', volumeWaitParams).promise()
+  logger.info(`Response from waitFor volumeAvailable: ${JSON.stringify(waitForVolume)}`)
 
   await updateMasterVolumeInDynamo(volume, volumeModel)
 

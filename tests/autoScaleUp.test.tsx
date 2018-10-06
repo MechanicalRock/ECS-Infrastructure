@@ -34,6 +34,12 @@ mockCreateVolume.mockReturnValue({
   promise: mockVolumePromise
 })
 
+let mockWaitFor = jest.fn()
+let mockWaitPromise = jest.fn()
+mockWaitFor.mockReturnValue({
+  promise: mockWaitPromise
+})
+
 jest.mock('aws-sdk', () => {
   return {
     EC2: () => {
@@ -43,6 +49,7 @@ jest.mock('aws-sdk', () => {
         createVolume: mockCreateVolume,
         describeInstances: mockDescribeInstances,
         describeVolumes: mockDescribeVolumes,
+        waitFor: mockWaitFor
       }
     },
     SNS: () => {
@@ -164,6 +171,16 @@ describe('When receiving an event from SNS', () => {
       await handler(event, context, callback)
 
       expect(mockUpdateItem).toHaveBeenCalled()
+    })
+    it('We issue a call to wait for the Snapshot', async () => {
+      await handler(event, context, callback)
+
+      expect(mockWaitFor).toHaveBeenCalled()
+    })
+    it('The call to waitFor is for \'snapshotComplete\'', async () => {
+      await handler(event, context, callback)
+
+      expect(mockWaitFor.mock.calls[0][0]).toBe('snapshotCompleted')
     })
   })
 })

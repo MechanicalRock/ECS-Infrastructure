@@ -75,7 +75,7 @@ Resources:
           inputs:
             runCommand:
             - "mount /dev/xdvy /data"
-      DocumentType: YAML
+      DocumentType: Command
 
 Outputs:
   TopicArn:

@@ -63,8 +63,26 @@ Resources:
       Topics:
       - !Ref ASGSNSTopic
 
+  SSMMountDocument:
+    Type: AWS::SSM:Document
+    Properties:
+      Content:
+        schemaVersion: "2.2"
+        description: "Command document for mounting the EBS volume"
+        mainSteps:
+        - action: "aws:runShellScript"
+          name: "Mount EBS Volume"
+          inputs:
+            runCommand:
+            - "mount /dev/xdvy /data"
+      DocumentType: YAML
+
 Outputs:
   TopicArn:
     Export:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'TopicArn']]
     Value: !Ref ASGSNSTopic
+
+  DocumentName:
+    Name: !Join ['-', [!Ref 'AWS::StackName', 'Document']]
+    Value: !Ref SSMMountDocument

@@ -64,7 +64,7 @@ Resources:
       - !Ref ASGSNSTopic
 
   SSMMountDocument:
-    Type: AWS::SSM:Document
+    Type: AWS::SSM::Document
     Properties:
       Content:
         schemaVersion: "2.2"

@@ -177,6 +177,7 @@ class VolumeModel {
   id: string
   volumeId: string
   device: string
+  snapshotId
 }
 
 Object.defineProperties(VolumeModel.prototype, {
@@ -190,7 +191,8 @@ Object.defineProperties(VolumeModel.prototype, {
         keyType: 'HASH'
       },
       volumeId: {type: 'String'},
-      device: {type: 'String'}
+      device: {type: 'String'},
+      snapshotId: {type: 'String'}
     },
   },
 })

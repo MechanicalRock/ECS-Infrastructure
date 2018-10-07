@@ -1,0 +1,170 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ECS Pipeline
+
+Parameters:
+  RoleName:
+    Type: String
+    Default: ecsPipelineServiceRole
+    Description: The name of the IAM Role
+
+Resources:
+  PipelineIAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "ECSPipelineCloudformationPolicy"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -
+          Effect: Allow
+          Action:
+          - cloudformation:*
+          - iam:GetRole
+          - iam:CreateRole
+          - iam:AttachRolePolicy
+          - iam:DetachRolePolicy
+          - iam:DeleteRole
+          - iam:CreateInstanceProfile
+          - iam:DeleteInstanceProfile
+          - iam:AddRoleToInstanceProfile
+          - iam:RemoveRoleFromInstanceProfile
+          - ec2:*
+          Resource: "*"
+      Roles:
+        - !Ref ECSPipelineIAMRole
+
+  ECSPipelineIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+              Service:
+                - codepipeline.amazonaws.com
+                - cloudformation.amazonaws.com
+          Action:
+            - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodePipelineFullAccess
+        - arn:aws:iam::aws:policy/AWSCodeCommitFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+      RoleName: !Ref RoleName
+
+  ECSPipelineArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+
+  CodeCommitRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryDescription: Repository for managing the ECS Infrastructure
+      RepositoryName: ECSInfrastructure
+
+  CodeBuildRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: ECSInfrastructureCodeBuildRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: codebuild-service
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+            Version: 2012-10-17
+
+  CodeBuildProject:
+    Type: 'AWS::CodeBuild::Project'
+    Properties:
+      Name: CodeBuildProject
+      Description: Build and Deploy Lambdas
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: linuxContainer
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/nodejs:8.11.0
+      Source:
+        BuildSpec: 'buildspec.yml'
+        Location: !GetAtt CodeCommitRepository.CloneUrlHttp
+        GitCloneDepth: 1
+        Type: CODECOMMIT
+      TimeoutInMinutes: 10
+
+  ECSClusterPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Location: !Ref ECSPipelineArtifactBucket
+        Type: S3
+      Name: EKSClusterPipeline
+      RoleArn: !GetAtt ECSPipelineIAMRole.Arn
+      Stages:
+        -
+          Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeCommit
+                Version: "1"
+              Configuration:
+                BranchName: 'master'
+                RepositoryName: !GetAtt CodeCommitRepository.Name
+              Name: Source
+              OutputArtifacts:
+                -
+                  Name: SourceCode
+          Name: Source
+        -
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                Capabilities: CAPABILITY_NAMED_IAM
+                RoleArn: !GetAtt ECSPipelineIAMRole.Arn
+                StackName: ecsInfrastructure
+                TemplateConfiguration: SourceCode::configuration.json
+                TemplatePath: SourceCode::infrastructure.yml
+              InputArtifacts:
+                -
+                  Name: SourceCode
+              Name: CreateInfrastructure
+          Name: CreateInfrastructure
+        -
+          Actions:
+            - Name: Build_ToDo_API
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+              InputArtifacts:
+                - Name: SourceCode
+              OutputArtifacts:
+                - Name: BuildOutput
+          Name: Pipeline

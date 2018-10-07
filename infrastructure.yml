@@ -1,5 +1,13 @@
-Resources:
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ECS Infrastructure
 
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-a2418bc5
+
+Resources:
   EC2IAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -49,8 +57,22 @@ Resources:
     Properties:
       AvailabilityZones: !GetAZs ''
       LaunchConfigurationName: !Ref LaunchConfiguration
-      MaxSize: 1
-      MinSize: 1
+      LoadBalancerNames:
+        - !Ref LoadBalancer
+      MaxSize: '1'
+      MinSize: '1'
+      TargetGroupARNs:
+        - !Ref TargetGroup
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8000
+      Protocol: TCP
+      VpcId: !Ref VpcId
 
   LifecycleHook:
     Type: AWS::AutoScaling::LifecycleHook

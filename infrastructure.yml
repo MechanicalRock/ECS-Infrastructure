@@ -66,6 +66,10 @@ Resources:
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets:
+        - subnet-f2af3295
+        - subnet-f451b6ac
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup

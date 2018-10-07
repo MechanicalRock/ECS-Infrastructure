@@ -112,7 +112,14 @@ async function mountVolume(instanceId, callback) {
 async function createNewVolumeFromVolume(volumeModel: VolumeModel, az: string, callback: Callback) {
   try {
     const snapshotParams = {
-      VolumeId: volumeModel.volumeId
+      VolumeId: volumeModel.volumeId,
+      TagSpecifications: [{
+        ResourceType: 'snapshot',
+        Tags: [{
+          Key: 'Name',
+          Value: 'ECSDataBackup'
+        }]
+      }]
     }
     logger.info(`Parameters sent to createSnapshot: ${JSON.stringify(snapshotParams)}`)
     let snapshot = await ec2.createSnapshot(snapshotParams).promise()

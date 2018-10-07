@@ -3,6 +3,7 @@ import * as AWS from 'aws-sdk'
 import { logger } from './logger';
 import { DataMapper, DynamoDbSchema, DynamoDbTable } from '@aws/dynamodb-data-mapper';
 import DynamoDB = require('aws-sdk/clients/dynamodb');
+import { CreateSnapshotRequest } from 'aws-sdk/clients/ec2';
 
 const ec2 = new AWS.EC2()
 const client = new DynamoDB({region: process.env.REGION})
@@ -13,8 +14,15 @@ export async function handler(event: ScheduledEvent, context: Context, callback:
   let volume = new VolumeModel()
   volume.id = '0'
   volume = await mapper.get(volume)
-  const snapshotParams = {
-    VolumeId: volume.volumeId
+  const snapshotParams: CreateSnapshotRequest = {
+    VolumeId: volume.volumeId,
+    TagSpecifications: [{
+      ResourceType: 'snapshot',
+      Tags: [{
+        Key: 'Name',
+        Value: 'ECSDataBackup'
+      }]
+    }]
   }
   logger.info(`Parameters sent to createSnapshot: ${JSON.stringify(snapshotParams)}`)
   let snapshot = await ec2.createSnapshot(snapshotParams).promise()

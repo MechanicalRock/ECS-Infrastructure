@@ -99,7 +99,9 @@ describe('When receiving an event from SNS', () => {
   beforeEach(() => {
     event = snsEventRecordFactory()
     mockGetItem.mockClear()
-    mockGetItem.mockReturnValue(Promise.resolve(MOCK_GET_ITEM))
+    mockGetItem.mockReturnValue(Promise.resolve(mockGetItemFactory()))
+    mockUpdateItem.mockClear()
+    mockUpdateItem.mockReturnValue(Promise.resolve(mockGetItemFactory()))
     mockVolumesPromise.mockReturnValue(Promise.resolve(mockDescribeVolumesFactory()))
     mockInstancesPromise.mockReturnValue(Promise.resolve(MOCK_DESCRIBE_INSTANCES))
     mockSNSPublish.mockClear()
@@ -180,7 +182,7 @@ describe('When receiving an event from SNS', () => {
     beforeEach(() => {
       mockVolumesPromise.mockReturnValueOnce(Promise.resolve(mockDescribeVolumesFactory('ap-southeast-1b')))
       mockSnapshotPromise.mockReturnValueOnce(Promise.resolve({SnapshotId: 'snap-066877671789bd71b'}))
-      mockVolumePromise.mockReturnValueOnce(Promise.resolve(MOCK_GET_ITEM))
+      mockVolumePromise.mockReturnValue(Promise.resolve({VolumeId: 'newVolume'}))
       mockAttachPromise.mockClear()
       mockWaitFor.mockClear()
     })
@@ -191,8 +193,8 @@ describe('When receiving an event from SNS', () => {
     })
     describe('If the master volume cannot be found', () => {
       beforeEach(() => {
-        mockVolumesPromise.mockClear()
         mockCreateVolume.mockClear()
+        mockDescribeVolumes.mockClear()
         mockDescribeVolumes.mockRejectedValue('')
       })
       it('We create a volume from the last snapshot taken', async () => {
@@ -288,12 +290,6 @@ function snsEventRecordFactory(): SNSEvent {
 }
 
 const fakeDevice = 'fakeDevice'
-const MOCK_GET_ITEM = {
-  id: 0,
-  volumeId: 'fakeVolumeId',
-  device: fakeDevice,
-  snapshotId: 'latestSnapshot'
-}
 
 function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a') {
   return {
@@ -322,6 +318,14 @@ function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a') {
   }
 }
 
+function mockGetItemFactory() {
+  return {
+    id: 0,
+    volumeId: 'fakeVolumeId',
+    device: fakeDevice,
+    snapshotId: 'latestSnapshot'
+  }
+}
 const MOCK_DESCRIBE_INSTANCES = {
   Reservations: [{
     Instances: [{

@@ -21,22 +21,19 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
     let volume
     try {
       volume = await getVolumeData(volumeItem.volumeId)
-      if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
-        await attachVolume(volumeItem, instance, callback)
-        await mountVolume(instance.InstanceId!, callback)
-        callback(null, 'EC2 machine has been correctly provisioned')
-      } else {
-        await createNewVolumeFromVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
-        await attachVolume(volumeItem, instance, callback)
-        await mountVolume(instance.InstanceId!, callback)
-        callback(null, 'EC2 machine has been correctly provisioned')
-      }
     } catch {
       volumeItem = await createNewVolume(volumeItem.snapshotId, volumeItem, instance.Placement!.AvailabilityZone!, callback)
       await attachVolume(volumeItem, instance, callback)
       await mountVolume(instance.InstanceId!, callback)
       callback(null, 'EC2 machine has been correctly provisioned')
     }
+    if (instance.Placement!.AvailabilityZone! !== volume.AvailabilityZone) {
+      volumeItem = await createNewVolumeFromVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
+      logger.info(`Volume item: ${JSON.stringify(volumeItem)}`)
+    }
+    await attachVolume(volumeItem, instance, callback)
+    await mountVolume(instance.InstanceId!, callback)
+    callback(null, 'EC2 machine has been correctly provisioned')
   } catch (error) {
     logger.error(`Error thrown, publishing to SNS and invoking the callback ${JSON.stringify(error)}`)
     await publishErrorToSNS(instanceId, volumeItem)
@@ -128,7 +125,14 @@ async function createNewVolumeFromVolume(volumeModel: VolumeModel, az: string, c
     let waitFor = await ec2.waitFor('snapshotCompleted', snapshotWaitParams).promise()
     logger.info(`Response from waitFor snapshotCompleted: ${JSON.stringify(waitFor)}`)
 
-    return await createNewVolume(snapshot.SnapshotId!, volumeModel, az, callback)
+    volumeModel.snapshotId = snapshot.SnapshotId!
+
+    logger.info(`Model to be updated in Dynamo: ${JSON.stringify(volumeModel)}`)
+    volumeModel = await mapper.update(volumeModel)
+    logger.info(`Model after update in Dynamo: ${JSON.stringify(volumeModel)}`)
+
+    let volume = await createNewVolume(snapshot.SnapshotId!, volumeModel, az, callback)
+    return volume
   } catch (error) {
     logger.error(`Error creating volume: ${JSON.stringify(error)}`)
     await publishErrorToSNS('', volumeModel.volumeId)
@@ -153,9 +157,9 @@ async function createNewVolume(snapshotId, volumeModel, az, callback) {
     let waitForVolume = await ec2.waitFor('volumeAvailable', volumeWaitParams).promise()
     logger.info(`Response from waitFor volumeAvailable: ${JSON.stringify(waitForVolume)}`)
 
-    await updateMasterVolumeInDynamo(volume, volumeModel)
+    volumeModel = await updateMasterVolumeInDynamo(volume, volumeModel)
 
-    return volume
+    return volumeModel
   } catch (error) {
     logger.error(`Error creating volume: ${JSON.stringify(error)}`)
     await publishErrorToSNS('', volumeModel.volumeId)
@@ -181,6 +185,7 @@ async function publishErrorToSNS(instanceId: string, volumeId: string | undefine
 }
 
 async function updateMasterVolumeInDynamo(volume: PromiseResult<AWS.EC2.Volume, AWS.AWSError>, volumeModel: VolumeModel) {
+  logger.info(`${JSON.stringify(volume)}`)
   let newVolumeModel = new VolumeModel()
   newVolumeModel.volumeId = volume.VolumeId!
   newVolumeModel.id = volumeModel.id
@@ -189,6 +194,8 @@ async function updateMasterVolumeInDynamo(volume: PromiseResult<AWS.EC2.Volume, 
   logger.info(`Model to be updated in Dynamo: ${JSON.stringify(newVolumeModel)}`)
   newVolumeModel = await mapper.update(newVolumeModel)
   logger.info(`Model after update in Dynamo: ${JSON.stringify(newVolumeModel)}`)
+
+  return newVolumeModel
 }
 
 class VolumeModel {

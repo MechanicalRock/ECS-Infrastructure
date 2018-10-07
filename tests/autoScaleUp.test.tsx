@@ -104,6 +104,9 @@ describe('When receiving an event from SNS', () => {
     mockInstancesPromise.mockReturnValue(Promise.resolve(MOCK_DESCRIBE_INSTANCES))
     mockSNSPublish.mockClear()
     mockAttachPromise.mockReturnValue('')
+    mockDescribeVolumes.mockReturnValue({
+      promise: mockVolumesPromise
+    })
   })
   it('We issue a call to get the status of the EC2', async () => {
     await handler(event, context, callback);
@@ -185,6 +188,18 @@ describe('When receiving an event from SNS', () => {
       await handler(event, context, callback)
 
       expect(mockSnapshotPromise).toHaveBeenCalled()
+    })
+    describe('If the master volume cannot be found', () => {
+      beforeEach(() => {
+        mockVolumesPromise.mockClear()
+        mockCreateVolume.mockClear()
+        mockDescribeVolumes.mockRejectedValue('')
+      })
+      it('We create a volume from the last snapshot taken', async () => {
+        await handler(event, context, callback)
+
+        expect(mockCreateVolume.mock.calls[0][0].SnapshotId).toBe('latestSnapshot')
+      })
     })
     it('We issue a call to create a volume from the snapshot', async () => {
       await handler(event, context, callback)
@@ -276,7 +291,8 @@ const fakeDevice = 'fakeDevice'
 const MOCK_GET_ITEM = {
   id: 0,
   volumeId: 'fakeVolumeId',
-  device: fakeDevice
+  device: fakeDevice,
+  snapshotId: 'latestSnapshot'
 }
 
 function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a') {

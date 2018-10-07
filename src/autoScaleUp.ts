@@ -18,13 +18,21 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
     instanceId = message.EC2InstanceId
     let instance = await getInstanceData(instanceId)
     volumeItem = await getVolumeItem()
-    let volume = await getVolumeData(volumeItem.volumeId)
-    if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
-      await attachVolume(volumeItem, instance, callback)
-      await mountVolume(instance.InstanceId!, callback)
-      callback(null, 'EC2 machine has been correctly provisioned')
-    } else {
-      await createNewVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
+    let volume
+    try {
+      volume = await getVolumeData(volumeItem.volumeId)
+      if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone) {
+        await attachVolume(volumeItem, instance, callback)
+        await mountVolume(instance.InstanceId!, callback)
+        callback(null, 'EC2 machine has been correctly provisioned')
+      } else {
+        await createNewVolumeFromVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
+        await attachVolume(volumeItem, instance, callback)
+        await mountVolume(instance.InstanceId!, callback)
+        callback(null, 'EC2 machine has been correctly provisioned')
+      }
+    } catch {
+      volumeItem = await createNewVolume(volumeItem.snapshotId, volumeItem, instance.Placement!.AvailabilityZone!, callback)
       await attachVolume(volumeItem, instance, callback)
       await mountVolume(instance.InstanceId!, callback)
       callback(null, 'EC2 machine has been correctly provisioned')
@@ -104,7 +112,7 @@ async function mountVolume(instanceId, callback) {
   }
 }
 
-async function createNewVolume(volumeModel: VolumeModel, az: string, callback: Callback) {
+async function createNewVolumeFromVolume(volumeModel: VolumeModel, az: string, callback: Callback) {
   try {
     const snapshotParams = {
       VolumeId: volumeModel.volumeId
@@ -120,9 +128,19 @@ async function createNewVolume(volumeModel: VolumeModel, az: string, callback: C
     let waitFor = await ec2.waitFor('snapshotCompleted', snapshotWaitParams).promise()
     logger.info(`Response from waitFor snapshotCompleted: ${JSON.stringify(waitFor)}`)
 
+    return await createNewVolume(snapshot.SnapshotId!, volumeModel, az, callback)
+  } catch (error) {
+    logger.error(`Error creating volume: ${JSON.stringify(error)}`)
+    await publishErrorToSNS('', volumeModel.volumeId)
+    callback(error, null)
+  }
+}
+
+async function createNewVolume(snapshotId, volumeModel, az, callback) {
+  try {
     const volumeParams = {
       AvailabilityZone: az,
-      SnapshotId: snapshot.SnapshotId!
+      SnapshotId: snapshotId
     }
     logger.info(`Parameters sent createVolume: ${JSON.stringify(volumeParams)}`)
     let volume = await ec2.createVolume(volumeParams).promise()

@@ -99,6 +99,7 @@ Resources:
             "",
             [
               "#!/bin/bash -xe\n",
+              "sudo mkdir -p /data\n",
               "sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm\n",
               "echo ECS_CLUSTER=", { Ref: ECSCluster }, " >> /etc/ecs/ecs.config;echo ECS_BACKEND_HOST= >> /etc/ecs/ecs.config;",
             ]

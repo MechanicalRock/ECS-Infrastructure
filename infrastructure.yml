@@ -53,6 +53,7 @@ Resources:
       - LifecycleRole
       - ASGSNSTopic
       - ASGSNSTopicPolicy
+      - LoadBalancer
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AvailabilityZones: !GetAZs ''

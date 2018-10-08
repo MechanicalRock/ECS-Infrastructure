@@ -81,7 +81,7 @@ Resources:
       MinSize: '1'
       TargetGroupARNs:
         - !Ref TargetGroup
-      VPCZoneIdentifies:
+      VPCZoneIdentifier:
         - !Ref Subnet1
         - !Ref Subnet2
         - !Ref Subnet3

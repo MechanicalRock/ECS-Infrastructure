@@ -94,6 +94,9 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
 
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
 

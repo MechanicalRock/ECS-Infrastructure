@@ -25,6 +25,18 @@ Resources:
     Properties:
       CidrBlock: 10.0.0.0/16
 
+  Subnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        CidrBlock: 10.0.0.0/24
+        VpcId: !Ref VPC
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
+
 
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -67,8 +79,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - subnet-f2af3295
-        - subnet-f451b6ac
+        - !Ref Subnet1
+        - !Ref Subnet2
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup

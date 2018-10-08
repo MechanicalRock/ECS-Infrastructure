@@ -146,7 +146,6 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM
                 RoleArn: !GetAtt ECSPipelineIAMRole.Arn
                 StackName: ecsInfrastructure
-                TemplateConfiguration: SourceCode::configuration.json
                 TemplatePath: SourceCode::infrastructure.yml
               InputArtifacts:
                 -

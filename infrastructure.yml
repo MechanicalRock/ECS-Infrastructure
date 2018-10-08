@@ -53,13 +53,10 @@ Resources:
       - LifecycleRole
       - ASGSNSTopic
       - ASGSNSTopicPolicy
-      - LoadBalancer
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AvailabilityZones: !GetAZs ''
       LaunchConfigurationName: !Ref LaunchConfiguration
-      LoadBalancerNames:
-        - !GetAtt LoadBalancer.LoadBalancerFullName
       MaxSize: '1'
       MinSize: '1'
       TargetGroupARNs:

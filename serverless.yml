@@ -24,10 +24,10 @@ functions:
     environment:
       MASTER_VOLUME_TABLE: {"Ref": MasterVolumeTable}
       SUPPORT_SNS_TOPIC_ARN: {"Ref": SupportSNSTopic}
-      DOCUMENT_NAME: {"Fn::ImportValue": ecsDRInfrastructure-Document}
+      DOCUMENT_NAME: {"Fn::ImportValue": ecsInfrastructure-Document}
     events:
       - sns:
-          arn: arn:aws:sns:ap-southeast-2:598112752826:ECS_ASG_Topic
+          arn: {"Fn::ImportValue": 	ecsInfrastructure-TopicArn}
     timeout: 300
 
   snapshotter:

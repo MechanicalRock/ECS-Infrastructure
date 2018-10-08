@@ -59,7 +59,7 @@ Resources:
       AvailabilityZones: !GetAZs ''
       LaunchConfigurationName: !Ref LaunchConfiguration
       LoadBalancerNames:
-        - !GetAtt LoadBalancer.LoadBalancerName
+        - !GetAtt LoadBalancer.LoadBalancerFullName
       MaxSize: '1'
       MinSize: '1'
       TargetGroupARNs:

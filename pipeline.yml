@@ -33,6 +33,7 @@ Resources:
           - ssm:*
           - sns:*
           - codebuild:*
+          - ecs:*
           Resource: "*"
       Roles:
         - !Ref ECSPipelineIAMRole

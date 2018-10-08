@@ -27,7 +27,15 @@ functions:
       DOCUMENT_NAME: {"Fn::ImportValue": ecsInfrastructure-Document}
     events:
       - sns:
-          arn: {"Fn::ImportValue": 	ecsInfrastructure-TopicArn}
+          arn:
+            Fn::Join:
+              - ""
+              - - "arn:aws:sns:"
+                - Ref: "AWS::Region"
+                - ":"
+                - Ref: "AWS::AccountId"
+                - ":ECS_ASG_Topic"
+          topicName: ECS_ASG_Topic
     timeout: 300
 
   snapshotter:

@@ -30,6 +30,8 @@ Resources:
           - iam:AddRoleToInstanceProfile
           - iam:RemoveRoleFromInstanceProfile
           - ec2:*
+          - ssm:*
+          - sns:*
           Resource: "*"
       Roles:
         - !Ref ECSPipelineIAMRole
@@ -53,6 +55,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AmazonVPCFullAccess
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess
       RoleName: !Ref RoleName
 
   ECSPipelineArtifactBucket:

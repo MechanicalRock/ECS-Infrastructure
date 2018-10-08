@@ -32,6 +32,7 @@ Resources:
           - ec2:*
           - ssm:*
           - sns:*
+          - codebuild:*
           Resource: "*"
       Roles:
         - !Ref ECSPipelineIAMRole

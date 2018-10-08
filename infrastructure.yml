@@ -2,11 +2,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: ECS Infrastructure
 
-Parameters:
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-    Default: vpc-a2418bc5
-
 Resources:
   EC2IAMRole:
     Type: AWS::IAM::Role
@@ -24,6 +19,12 @@ Resources:
       Path: '/'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+
 
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -74,7 +75,7 @@ Resources:
     Properties:
       Port: 8000
       Protocol: TCP
-      VpcId: !Ref VpcId
+      VpcId: !Ref VPC
 
   LifecycleHook:
     Type: AWS::AutoScaling::LifecycleHook

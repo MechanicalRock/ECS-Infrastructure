@@ -34,6 +34,7 @@ Resources:
           - sns:*
           - codebuild:*
           - ecs:*
+          - route53:*
           Resource: "*"
       Roles:
         - !Ref ECSPipelineIAMRole

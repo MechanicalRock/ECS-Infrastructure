@@ -138,7 +138,7 @@ Resources:
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
         HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
-      HostedZoneId: route53Infrastructure-HostedZone
+      HostedZoneId: !ImportValue route53Infrastructure-HostedZone
 
   ECSCluster:
     Type: AWS::ECS::Cluster

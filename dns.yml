@@ -1,0 +1,17 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ECS Infrastructure
+
+Resources:
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: sandbox.austal.io
+      HostedZoneConfig:
+        Comment: My hosted zone for sandbox.austal.io
+
+Outputs:
+  HostedZone:
+    Export:
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'HostedZone']]
+    Value: !Ref HostedZone

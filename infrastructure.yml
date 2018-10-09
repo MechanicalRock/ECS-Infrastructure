@@ -130,6 +130,16 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
 
+  route53RS:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: sandbox.austal.io
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer.DNSName
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+      HostedZoneId: route53Infrastructure-HostedZone
+
   ECSCluster:
     Type: AWS::ECS::Cluster
 

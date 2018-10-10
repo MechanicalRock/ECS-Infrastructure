@@ -216,7 +216,7 @@ Resources:
           name: "MountVolume"
           inputs:
             runCommand:
-            - "mount /dev/xvdy /data"
+            - "mount /dev/xdvy /data"
       DocumentType: Command
 
   SSMMountDocument2:

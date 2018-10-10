@@ -216,7 +216,7 @@ Resources:
           name: "MountVolume"
           inputs:
             runCommand:
-            - "mount /dev/xvdcy /data"
+            - "mount /dev/xvdy /data"
       DocumentType: Command
 
   SSMMountDocument2:
@@ -230,7 +230,7 @@ Resources:
             name: "MountVolume"
             inputs:
               runCommand:
-                - "mount /dev/xdvy /data"
+                - "mount /dev/xdvcy /data"
       DocumentType: Command
 
 Outputs:

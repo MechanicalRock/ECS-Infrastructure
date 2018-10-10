@@ -230,7 +230,7 @@ Resources:
             name: "MountVolume"
             inputs:
               runCommand:
-                - "mount /dev/xvdcy /data"
+                - "mount /dev/xdvy /data"
       DocumentType: Command
 
 Outputs:

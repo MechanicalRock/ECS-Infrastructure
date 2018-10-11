@@ -95,6 +95,9 @@ async function attachVolume(volumeItem, instance, callback) {
 async function mountVolume(instanceId, callback) {
   try {
     const commandParams = {
+      CloudWatchOutputConfig: {
+        CloudWatchOutputEnabled: true
+      },
       DocumentName: process.env.DOCUMENT_NAME!,
       InstanceIds: [instanceId]
     }

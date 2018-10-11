@@ -24,7 +24,7 @@ functions:
     environment:
       MASTER_VOLUME_TABLE: {"Ref": MasterVolumeTable}
       SUPPORT_SNS_TOPIC_ARN: {"Ref": SupportSNSTopic}
-      DOCUMENT_NAME: {"Fn::ImportValue": ecsInfrastructure-Document2}
+      DOCUMENT_NAME: {"Fn::ImportValue": ecsInfrastructure-Document3}
     events:
       - sns:
           arn:

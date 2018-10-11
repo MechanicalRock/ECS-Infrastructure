@@ -151,7 +151,7 @@ async function createNewVolume(snapshotId, volumeModel, az, callback) {
   try {
     const volumeParams = {
       AvailabilityZone: az,
-      SnapshotId: snapshotId
+      SnapshotId: snapshotId,
       VolumeType: "sc1"
     }
     logger.info(`Parameters sent createVolume: ${JSON.stringify(volumeParams)}`)

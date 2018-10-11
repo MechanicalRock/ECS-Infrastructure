@@ -151,8 +151,7 @@ async function createNewVolume(snapshotId, volumeModel, az, callback) {
   try {
     const volumeParams = {
       AvailabilityZone: az,
-      SnapshotId: snapshotId,
-      VolumeType: "sc1"
+      SnapshotId: snapshotId
     }
     logger.info(`Parameters sent createVolume: ${JSON.stringify(volumeParams)}`)
     let volume = await ec2.createVolume(volumeParams).promise()

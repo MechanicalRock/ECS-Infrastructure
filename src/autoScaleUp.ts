@@ -151,6 +151,7 @@ async function createNewVolume(snapshotId, volumeModel, az, callback) {
   try {
     const volumeParams = {
       AvailabilityZone: az,
+      Size: 500,
       SnapshotId: snapshotId,
       VolumeType: "sc1"
     }

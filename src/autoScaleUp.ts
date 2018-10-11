@@ -85,6 +85,12 @@ async function attachVolume(volumeItem, instance, callback) {
     logger.info(`Parameters sent to attachVolume: ${JSON.stringify(params)}`)
     let response = await ec2.attachVolume(params).promise()
     logger.info(`Response from attachVolume: ${JSON.stringify(response)}`)
+    const volumeParams = {
+      VolumeId: volumeItem.volumeId
+    }
+    logger.info(`Parameters sent to waitFor volumeInUse: ${JSON.stringify(volumeParams)}`)
+    let volumeWaitFor = await ec2.waitFor('volumeInUse', volumeParams)
+    logger.info(`Response from waitFor instanceRunning: ${JSON.stringify(volumeWaitFor)}`)
   } catch (error) {
     logger.error(`Error received from sendCommand: ${JSON.stringify(error)}`)
     await publishErrorToSNS(instance.InstanceId!, volumeItem.volumeId)

@@ -247,6 +247,20 @@ Resources:
                 - "mount /dev/xvdcy /data"
       DocumentType: Command
 
+  SSMMountDocument4:
+    Type: AWS::SSM::Document
+    Properties:
+      Content:
+        schemaVersion: "2.2"
+        description: "Command document for mounting the EBS volume"
+        mainSteps:
+          - action: "aws:runShellScript"
+            name: "MountVolume"
+            inputs:
+              runCommand:
+                - "sudo mount /dev/xvdcy /data"
+      DocumentType: Command
+
 Outputs:
   TopicArn:
     Export:
@@ -267,3 +281,8 @@ Outputs:
     Export:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'Document3']]
     Value: !Ref SSMMountDocument3
+
+  DocumentName4:
+    Export:
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'Document4']]
+    Value: !Ref SSMMountDocument4

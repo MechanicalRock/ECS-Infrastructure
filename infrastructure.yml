@@ -147,11 +147,12 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Memory: "1400"
+      Cpu: "256"
       RequiresCompatibilities:
         - "EC2"
       ContainerDefinitions:
         -
-          Name: "testtaskdefcontainer"
+          Name: "Grafana"
           MountPoints:
             -
               SourceVolume: "my-vol"

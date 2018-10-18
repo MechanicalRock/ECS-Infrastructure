@@ -165,20 +165,7 @@ Resources:
             - "FOREGROUND"
           Memory: "500"
           Essential: "true"
-        -
-          Name: "busybox"
-          Image: "busybox"
-          Cpu: "10"
-          EntryPoint:
-            - "sh"
-            - "-c"
-          Memory: "500"
-          Command:
-            - "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
-          Essential: "false"
-          VolumesFrom:
-            -
-              SourceContainer: "testtaskdef"
+
       Volumes:
         -
           Host:

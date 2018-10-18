@@ -148,8 +148,7 @@ Resources:
     Properties:
       ContainerDefinitions:
         -
-          Name:
-            Ref: "AppName"
+          Name: "testtaskdef"
           MountPoints:
             -
               SourceVolume: "my-vol"
@@ -158,10 +157,8 @@ Resources:
           Cpu: "10"
           PortMappings:
             -
-              ContainerPort:
-                Ref: "AppContainerPort"
-              HostPort:
-                Ref: "AppHostPort"
+              ContainerPort: 1
+              HostPort: 2
           EntryPoint:
             - "/usr/sbin/apache2"
             - "-D"
@@ -181,8 +178,7 @@ Resources:
           Essential: "false"
           VolumesFrom:
             -
-              SourceContainer:
-                Ref: "AppName"
+              SourceContainer: "SrcContainer"
       Volumes:
         -
           Host:

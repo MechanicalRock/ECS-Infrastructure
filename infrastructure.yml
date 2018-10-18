@@ -156,13 +156,14 @@ Resources:
           MountPoints:
             -
               SourceVolume: "my-vol"
-              ContainerPath: "/var/www/my-vol"
+              ContainerPath: "/etc/grafana"
           Image: "amazon/amazon-ecs-sample"
-          Cpu: "10"
+          Cpu: "0"
           PortMappings:
             -
-              ContainerPort: 1
-              HostPort: 2
+              ContainerPort: 3000
+              HostPort: 3000
+              Protocol: tcp
           EntryPoint:
             - "/usr/sbin/apache2"
             - "-D"

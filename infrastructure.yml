@@ -146,9 +146,12 @@ Resources:
   taskdefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
+      Name: "TestTaskDef"
+      RequiresCompatibilities:
+        - "EC2"
       ContainerDefinitions:
         -
-          Name: "testtaskdef"
+          Name: "testtaskdefcontainer"
           MountPoints:
             -
               SourceVolume: "my-vol"

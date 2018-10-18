@@ -155,9 +155,9 @@ Resources:
           Name: "Grafana"
           MountPoints:
             -
-              SourceVolume: "my-vol"
+              SourceVolume: "grafana-config"
               ContainerPath: "/etc/grafana"
-          Image: "amazon/amazon-ecs-sample"
+          Image: "docker.io/grafana/grafana"
           Cpu: "0"
           PortMappings:
             -
@@ -174,8 +174,8 @@ Resources:
       Volumes:
         -
           Host:
-            SourcePath: "/var/lib/docker/vfs/dir/"
-          Name: "my-vol"
+            SourcePath: "/data/grafana/config"
+          Name: "grafana-config"
 
 
   InternetGateway:

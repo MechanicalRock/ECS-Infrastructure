@@ -143,10 +143,10 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
 
-  taskdefinition:
+  taskdefinitiontest:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Name: "TestTaskDef"
+      Memory: "1400"
       RequiresCompatibilities:
         - "EC2"
       ContainerDefinitions:

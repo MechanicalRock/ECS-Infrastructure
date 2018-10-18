@@ -178,7 +178,7 @@ Resources:
           Essential: "false"
           VolumesFrom:
             -
-              SourceContainer: "SrcContainer"
+              SourceContainer: "testtaskdef"
       Volumes:
         -
           Host:

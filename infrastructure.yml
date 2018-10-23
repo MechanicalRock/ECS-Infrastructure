@@ -213,9 +213,6 @@ Resources:
           name: "grafana-config"
           host:
             SourcePath: "/data/grafana/config"
-      Compatibilities:
-        -
-          EC2
       RequiresCompatibilities:
         -
           EC2

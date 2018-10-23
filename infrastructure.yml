@@ -190,7 +190,7 @@ Resources:
             Options:
               "awslogs-group": NifiLogs
               "awslogs-region": "ap-southeast-2"
-              "awslogs-stream-prefix": grafana
+              "awslogs-stream-prefix": grafana-sandbox
       Family: Grafana
       Volumes:
         -
@@ -219,6 +219,55 @@ Resources:
       Cpu: 256
       Memory: 1400
 
+  InfluxDBTaskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        -
+          Name: influxdb
+          Image: "docker.io/influxdb"
+          Cpu: 0
+          PortMappings:
+            -
+          ContainerPort: 8086
+            HostPort: 8086
+            Protocol: tcp
+          Essential: true
+          Environment:
+            -
+          Name: ECS_ENGINE_AUTH_DATA
+            Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"xxx\",\"email\":\"xxx@austal.com\"}}"
+            -
+          Name: ECS_ENGINE_AUTH_TYPE
+            Value: dockercfg
+          MountPoints:
+            -
+          SourceVolume: "influxdb-data"
+            ContainerPath: "/var/lib/influxdb"
+            -
+          SourceVolume: "influxdb-config"
+            ContainerPath: "/etc/influxdb"
+          VolumesFrom:
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              "awslogs-group": NifiLogs
+              "awslogs-region": "ap-southeast-2"
+              "awslogs-stream-prefix": influxdb-sandbox
+      Family: influxdb
+      Volumes:
+        -
+          Name: "influxdb-data"
+          Host:
+            SourcePath: "/data/influxdb/data"
+        -
+          Name: "influxdb-config"
+          Host:
+            SourcePath: "/data/influxdb/config"
+      Compatibilities:
+        -
+          EC2
+      Memory: 1024
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway

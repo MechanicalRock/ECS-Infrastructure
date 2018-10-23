@@ -143,7 +143,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
 
-  taskdefinitiontest:
+  GrafanaTaskDef:
     Type: AWS::ECS::TaskDefinition
     Properties:
       ContainerDefinitions:

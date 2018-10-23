@@ -184,7 +184,6 @@ Resources:
             -
               SourceVolume: "grafana-provisioning"
               ContainerPath: "/etc/grafana/provisioning"
-          VolumesFrom:
           User: root
           LogConfiguration:
             LogDriver: awslogs

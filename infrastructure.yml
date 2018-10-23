@@ -192,7 +192,6 @@ Resources:
               "awslogs-region": "ap-southeast-2"
               "awslogs-stream-prefix": grafana
       Family: Grafana
-      Revision: 4
       Volumes:
         -
           Name: "grafana-data"

@@ -146,36 +146,94 @@ Resources:
   taskdefinitiontest:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Memory: "1400"
-      Cpu: "256"
-      RequiresCompatibilities:
-        - "EC2"
       ContainerDefinitions:
         -
-          Name: "Grafana"
-          MountPoints:
-            -
-              SourceVolume: "grafana-config"
-              ContainerPath: "/etc/grafana"
+          Name: Grafana
           Image: "docker.io/grafana/grafana"
-          Cpu: "0"
+          Cpu: 0
+          MemoryReservation: 1024
           PortMappings:
             -
               ContainerPort: 3000
               HostPort: 3000
               Protocol: tcp
-          EntryPoint:
-            - "/usr/sbin/apache2"
-            - "-D"
-            - "FOREGROUND"
-          Memory: "500"
-          Essential: "true"
-
+          Essential: true
+          Environment:
+            -
+              Name: ECS_ENGINE_AUTH_DATA
+              Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"Welcome02!\",\"email\":\"craig.knell@austal.com\"}}"
+            -
+              Name: ECS_ENGINE_AUTH_TYPE
+              Value: dockercfg
+            -
+              Name: GF_INSTALL_PLUGINS
+              Value: "grafana-simple-json-datasource"
+          MountPoints:
+            -
+              SourceVolume: "grafana-config"
+              ContainerPath: "/etc/grafana"
+            -
+              SourceVolume: "grafana-data"
+              ContainerPath: "/var/lib/grafana"
+            -
+              SourceVolume: "grafana-logs"
+              ContainerPath: "/var/log/grafana"
+            -
+              SourceVolume: "grafana-plugins"
+              ContainerPath: "/var/lib/grafana/plugins"
+            -
+              SourceVolume: "grafana-provisioning"
+              ContainerPath: "/etc/grafana/provisioning"
+          VolumesFrom:
+          User: root
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              "awslogs-group": NifiLogs
+              "awslogs-region": "ap-southeast-2"
+              "awslogs-stream-prefix": grafana
+      Family: Grafana
+      Revision: 4
       Volumes:
         -
+          Name: "grafana-data"
           Host:
+            SourcePath: "/data/grafana/data"
+        -
+          Name: "grafana-logs"
+          Host:
+            SourcePath: "/data/grafana/logs"
+        -
+          Name: "grafana-plugins"
+          Host:
+            SourcePath: "/data/grafana/plugins"
+        -
+          Name: "grafana-provisioning"
+          Host:
+            SourcePath: "/data/grafana/provisioning"
+        -
+          name: "grafana-config"
+          host:
             SourcePath: "/data/grafana/config"
-          Name: "grafana-config"
+      Status: ACTIVE
+      RequiresAttributes:
+        -
+          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+        -
+          Name: "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        -
+          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+        -
+          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+      PlacementConstraints:
+      Compatibilities:
+        -
+          EC2
+      RequiresCompatibilities:
+        -
+          EC2
+      Cpu: 256
+      Memory: 1400
 
 
   InternetGateway:

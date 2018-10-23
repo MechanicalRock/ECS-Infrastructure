@@ -224,7 +224,6 @@ Resources:
           Name: "com.amazonaws.ecs.capability.docker-remote-api.1.21"
         -
           Name: "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-      PlacementConstraints:
       Compatibilities:
         -
           EC2

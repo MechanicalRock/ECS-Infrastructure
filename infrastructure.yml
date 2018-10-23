@@ -210,8 +210,8 @@ Resources:
           Host:
             SourcePath: "/data/grafana/provisioning"
         -
-          name: "grafana-config"
-          host:
+          Name: "grafana-config"
+          Host:
             SourcePath: "/data/grafana/config"
       RequiresCompatibilities:
         -

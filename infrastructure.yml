@@ -213,15 +213,6 @@ Resources:
           name: "grafana-config"
           host:
             SourcePath: "/data/grafana/config"
-      RequiresAttributes:
-        -
-          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.17"
-        -
-          Name: "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        -
-          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.21"
-        -
-          Name: "com.amazonaws.ecs.capability.docker-remote-api.1.19"
       Compatibilities:
         -
           EC2

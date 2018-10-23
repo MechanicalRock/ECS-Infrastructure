@@ -214,7 +214,6 @@ Resources:
           name: "grafana-config"
           host:
             SourcePath: "/data/grafana/config"
-      Status: ACTIVE
       RequiresAttributes:
         -
           Name: "com.amazonaws.ecs.capability.docker-remote-api.1.17"

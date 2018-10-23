@@ -229,25 +229,24 @@ Resources:
           Cpu: 0
           PortMappings:
             -
-          ContainerPort: 8086
-            HostPort: 8086
-            Protocol: tcp
+              ContainerPort: 8086
+              HostPort: 8086
+              Protocol: tcp
           Essential: true
           Environment:
             -
-          Name: ECS_ENGINE_AUTH_DATA
-            Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"xxx\",\"email\":\"xxx@austal.com\"}}"
+              Name: ECS_ENGINE_AUTH_DATA
+              Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"xxx\",\"email\":\"xxx@austal.com\"}}"
             -
-          Name: ECS_ENGINE_AUTH_TYPE
-            Value: dockercfg
+              Name: ECS_ENGINE_AUTH_TYPE
+              Value: dockercfg
           MountPoints:
             -
-          SourceVolume: "influxdb-data"
-            ContainerPath: "/var/lib/influxdb"
+              SourceVolume: "influxdb-data"
+              ContainerPath: "/var/lib/influxdb"
             -
-          SourceVolume: "influxdb-config"
-            ContainerPath: "/etc/influxdb"
-          VolumesFrom:
+              SourceVolume: "influxdb-config"
+              ContainerPath: "/etc/influxdb"
           LogConfiguration:
             LogDriver: awslogs
             Options:

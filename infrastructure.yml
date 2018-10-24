@@ -91,6 +91,7 @@ Resources:
       AssociatePublicIpAddress: true
       IamInstanceProfile: !Ref EC2InstanceProfile
       ImageId: ami-05b48eda7f92aadbe
+      SecurityGroups: [!Ref 'EcsSecurityGroup']
       InstanceType: t2.small
       KeyName: temp_pair
       UserData:

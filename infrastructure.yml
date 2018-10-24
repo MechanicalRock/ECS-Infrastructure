@@ -305,7 +305,7 @@ Resources:
       Cluster: !Ref ECSCluster
       DesiredCount: '1'
       LoadBalancers:
-        - ContainerName: Grafana
+        - ContainerName: "Grafana"
           ContainerPort: '3000'
           TargetGroupArn: !Ref TargetGroup
       LaunchType: EC2

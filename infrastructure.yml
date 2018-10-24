@@ -92,7 +92,7 @@ Resources:
       IamInstanceProfile: !Ref EC2InstanceProfile
       ImageId: ami-05b48eda7f92aadbe
       SecurityGroups: [!Ref 'EcsSecurityGroup']
-      InstanceType: t2.small
+      InstanceType: m4.large
       KeyName: temp_pair
       UserData:
         Fn::Base64:

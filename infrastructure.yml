@@ -276,7 +276,7 @@ Resources:
         -
           MaximumPercent: 200
           MinimumHealthyPercent: 50
-      PlacementStrategy:
+      PlacementStrategies:
         -
           Type: spread
           Field: "attribute:ecs.availability-zone"

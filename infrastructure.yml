@@ -304,6 +304,10 @@ Resources:
     Properties:
       Cluster: !Ref ECSCluster
       DesiredCount: '1'
+      LoadBalancers:
+        - ContainerName: Grafana
+          ContainerPort: '3000'
+          TargetGroupArn: !Ref TargetGroup
       LaunchType: EC2
       TaskDefinition: !Ref GrafanaTaskDef
       DeploymentConfiguration:
@@ -352,7 +356,7 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 8000
+      Port: 3000
       Protocol: TCP
       VpcId: !Ref VPC
 

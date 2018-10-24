@@ -236,7 +236,7 @@ Resources:
           Environment:
             -
               Name: ECS_ENGINE_AUTH_DATA
-              Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"xxx\",\"email\":\"xxx@austal.com\"}}"
+              Value: "{\"https://index.docker.io/v1/\":{\"username\":\"gekosurf\",\"password\":\"Welcome02!\",\"email\":\"craig.knell@austal.com\"}}"
             -
               Name: ECS_ENGINE_AUTH_TYPE
               Value: dockercfg
@@ -264,6 +264,25 @@ Resources:
           Host:
             SourcePath: "/data/influxdb/config"
       Memory: 1024
+
+  GrafanaService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: '1'
+      LaunchType: EC2
+      TaskDefinition: !Ref GrafanaTaskDef
+      DeploymentConfiguration:
+        -
+          MaximumPercent: 200
+          MinimumHealthyPercent: 50
+      PlacementStrategy:
+        -
+          Type: spread
+          Field: "attribute:ecs.availability-zone"
+        -
+          Type: spread
+          Field: instanceId
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway

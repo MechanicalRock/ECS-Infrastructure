@@ -355,6 +355,7 @@ Resources:
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: LoadBalancer
     Properties:
       Port: 3000
       Protocol: TCP

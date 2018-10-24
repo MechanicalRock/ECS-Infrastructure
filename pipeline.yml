@@ -35,7 +35,7 @@ Resources:
           - codebuild:*
           - ecs:*
           - route53:*
-          - cloudwatch:*
+          - logs:*
           Resource: "*"
       Roles:
         - !Ref ECSPipelineIAMRole

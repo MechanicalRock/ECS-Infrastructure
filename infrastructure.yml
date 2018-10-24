@@ -272,10 +272,8 @@ Resources:
       DesiredCount: '1'
       LaunchType: EC2
       TaskDefinition: !Ref GrafanaTaskDef
-      DeploymentConfiguration:
-        -
-          MaximumPercent: 200
-          MinimumHealthyPercent: 50
+      MaximumPercent: 200
+      MinimumHealthyPercent: 50
       PlacementStrategies:
         -
           Type: spread

@@ -306,6 +306,23 @@ Resources:
           Type: spread
           Field: instanceId
 
+  InfluxDBService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: '1'
+      LaunchType: EC2
+      TaskDefinition: !Ref InfluxDBTaskDef
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 50
+      PlacementStrategies:
+        -
+          Type: spread
+          Field: "attribute:ecs.availability-zone"
+        -
+          Type: spread
+          Field: instanceId
 
   LogGroup:
     Type: AWS::Logs::LogGroup

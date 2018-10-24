@@ -149,6 +149,7 @@ Resources:
     Properties:
       GroupDescription: ECS Security Group
       VpcId: !Ref VPC
+
   EcsSecurityGroupGrafanainbound:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -157,6 +158,7 @@ Resources:
       FromPort: '3000'
       ToPort: '3000'
       CidrIp: 0.0.0.0/0
+
   EcsSecurityGroupSSHinbound:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -165,6 +167,16 @@ Resources:
       FromPort: '22'
       ToPort: '22'
       CidrIp: 0.0.0.0/0
+
+  EcsSecurityGroupInfluxDBinbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref 'EcsSecurityGroup'
+      IpProtocol: tcp
+      FromPort: '8086'
+      ToPort: '8086'
+      CidrIp: 0.0.0.0/0
+
 
   GrafanaTaskDef:
     Type: AWS::ECS::TaskDefinition

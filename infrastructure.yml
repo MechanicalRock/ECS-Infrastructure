@@ -188,7 +188,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              "awslogs-group": NifiLogs
+              "awslogs-group": NifiLogs-sandbox
               "awslogs-region": "ap-southeast-2"
               "awslogs-stream-prefix": grafana-sandbox
       Family: Grafana
@@ -250,7 +250,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              "awslogs-group": NifiLogs
+              "awslogs-group": NifiLogs-sandbox
               "awslogs-region": "ap-southeast-2"
               "awslogs-stream-prefix": influxdb-sandbox
       Family: influxdb

@@ -287,7 +287,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: NifiLogs
+      LogGroupName: NifiLogs-sandbox
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway

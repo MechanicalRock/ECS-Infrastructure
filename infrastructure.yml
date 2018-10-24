@@ -283,6 +283,11 @@ Resources:
           Type: spread
           Field: instanceId
 
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: NifiLogs
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
 

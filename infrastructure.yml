@@ -465,48 +465,6 @@ Resources:
       Topics:
       - !Ref ASGSNSTopic
 
-  SSMMountDocument:
-    Type: AWS::SSM::Document
-    Properties:
-      Content:
-        schemaVersion: "2.2"
-        description: "Command document for mounting the EBS volume"
-        mainSteps:
-        - action: "aws:runShellScript"
-          name: "MountVolume"
-          inputs:
-            runCommand:
-            - "mount /dev/xdvy /data"
-      DocumentType: Command
-
-  SSMMountDocument2:
-    Type: AWS::SSM::Document
-    Properties:
-      Content:
-        schemaVersion: "2.2"
-        description: "Command document for mounting the EBS volume"
-        mainSteps:
-          - action: "aws:runShellScript"
-            name: "MountVolume"
-            inputs:
-              runCommand:
-                - "mount /dev/xdvcy /data"
-      DocumentType: Command
-
-  SSMMountDocument3:
-    Type: AWS::SSM::Document
-    Properties:
-      Content:
-        schemaVersion: "2.2"
-        description: "Command document for mounting the EBS volume"
-        mainSteps:
-          - action: "aws:runShellScript"
-            name: "MountVolume"
-            inputs:
-              runCommand:
-                - "mount /dev/xvdcy /data"
-      DocumentType: Command
-
   SSMMountDocument4:
     Type: AWS::SSM::Document
     Properties:
@@ -526,21 +484,6 @@ Outputs:
     Export:
       Name: !Join ['-', [!Ref 'AWS::StackName', 'TopicArn']]
     Value: !Ref ASGSNSTopic
-
-  DocumentName:
-    Export:
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'Document']]
-    Value: !Ref SSMMountDocument
-
-  DocumentName2:
-    Export:
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'Document2']]
-    Value: !Ref SSMMountDocument2
-
-  DocumentName3:
-    Export:
-      Name: !Join ['-', [!Ref 'AWS::StackName', 'Document3']]
-    Value: !Ref SSMMountDocument3
 
   DocumentName4:
     Export:

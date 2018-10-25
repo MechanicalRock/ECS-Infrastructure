@@ -360,6 +360,9 @@ Resources:
       Port: 3000
       Protocol: TCP
       VpcId: !Ref VPC
+      LoadBalancerArns:
+        -
+          "arn:aws:elasticloadbalancing:ap-southeast-2:583347106050:loadbalancer/app/ecsIn-LoadB-1PC74HFTRL3OT/f19ab346a595c341"
 
   LifecycleHook:
     Type: AWS::AutoScaling::LifecycleHook

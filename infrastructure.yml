@@ -124,9 +124,23 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
 
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: LoadBalancerSecurityGroup
+      GroupDescription: Security Group for Load Balancer
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: "-1"
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2

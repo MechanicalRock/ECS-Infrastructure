@@ -366,7 +366,7 @@ Resources:
       LoadBalancers:
         - ContainerName: "Grafana"
           ContainerPort: 3000
-          TargetGroupArn: !Ref TargetGroup
+          TargetGroupArn: !Ref GrafanaTargetGroup
       LaunchType: EC2
       TaskDefinition: !Ref GrafanaTaskDef
       DeploymentConfiguration:
@@ -389,7 +389,7 @@ Resources:
       LoadBalancers:
         - ContainerName: "influxdb"
           ContainerPort: 8086
-          TargetGroupArn: !Ref TargetGroup
+          TargetGroupArn: !Ref InfluxDBTargetGroup
       LaunchType: EC2
       TaskDefinition: !Ref InfluxDBTaskDef
       DeploymentConfiguration:

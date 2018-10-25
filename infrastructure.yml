@@ -133,6 +133,7 @@ Resources:
         - !Ref Subnet3
 
   GrafanaTargetGroup:
+    DependsOn: LoadBalancer
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 3000
@@ -140,6 +141,7 @@ Resources:
       VpcId: !Ref VPC
 
   InfluxDBTargetGroup:
+    DependsOn: LoadBalancer
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 8086

@@ -135,7 +135,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 3000
-      Protocol: TCP
+      Protocol: HTTP
       VpcId: !Ref VPC
 
   HttpListener:

@@ -156,7 +156,7 @@ Resources:
           TargetGroupArn: !Ref TargetGroup
       Conditions:
         - Field: path-pattern
-          Values: [/grafana]
+          Values: [/]
       ListenerArn: !Ref 'HttpListener'
       Priority: 1
 
@@ -356,6 +356,10 @@ Resources:
     Properties:
       Cluster: !Ref ECSCluster
       DesiredCount: '1'
+      LoadBalancers:
+        - ContainerName: "influxdb"
+          ContainerPort: '8086'
+          TargetGroupArn: !Ref TargetGroup
       LaunchType: EC2
       TaskDefinition: !Ref InfluxDBTaskDef
       DeploymentConfiguration:

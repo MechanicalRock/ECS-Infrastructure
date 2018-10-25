@@ -131,6 +131,35 @@ Resources:
         - !Ref Subnet2
         - !Ref Subnet3
 
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 3000
+      Protocol: TCP
+      VpcId: !Ref VPC
+
+  HttpListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  LoadBalancerHttpListenerRule:
+    Type: 'AWS::ElasticLoadBalancingV2::ListenerRule'
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      Conditions: !If
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref 'HttpListener'
+      Priority: 1
+
   route53RS:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -354,15 +383,7 @@ Resources:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
 
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Port: 3000
-      Protocol: TCP
-      VpcId: !Ref VPC
-      LoadBalancerArns:
-        -
-          "arn:aws:elasticloadbalancing:ap-southeast-2:583347106050:loadbalancer/app/ecsIn-LoadB-1PC74HFTRL3OT/f19ab346a595c341"
+
 
   LifecycleHook:
     Type: AWS::AutoScaling::LifecycleHook

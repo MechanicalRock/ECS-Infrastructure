@@ -154,9 +154,9 @@ Resources:
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
-      Conditions: !If
+      Conditions:
         - Field: path-pattern
-          Values: [/]
+          Values: [/grafana]
       ListenerArn: !Ref 'HttpListener'
       Priority: 1
 

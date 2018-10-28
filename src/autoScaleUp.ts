@@ -18,22 +18,25 @@ export async function handler(event: SNSEvent, context: Context, callback: Callb
     instanceId = message.EC2InstanceId
     let instance = await getInstanceData(instanceId)
     volumeItem = await getVolumeItem()
-    let volume
+    let volume: AWS.EC2.Volume
     try {
       volume = await getVolumeData(volumeItem.volumeId)
+      if (instance.Placement!.AvailabilityZone! === volume.AvailabilityZone && volume.State === 'in-use') {
+        await detachVolume(volumeItem, callback)
+      }
+      if (instance.Placement!.AvailabilityZone! !== volume.AvailabilityZone) {
+        volumeItem = await createNewVolumeFromVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
+        logger.info(`Volume item: ${JSON.stringify(volumeItem)}`)
+      }
+      await attachVolume(volumeItem, instance, callback)
+      await mountVolume(instance.InstanceId!, callback)
+      callback(null, 'EC2 machine has been correctly provisioned')
     } catch {
       volumeItem = await createNewVolume(volumeItem.snapshotId, volumeItem, instance.Placement!.AvailabilityZone!, callback)
       await attachVolume(volumeItem, instance, callback)
       await mountVolume(instance.InstanceId!, callback)
       callback(null, 'EC2 machine has been correctly provisioned')
     }
-    if (instance.Placement!.AvailabilityZone! !== volume.AvailabilityZone) {
-      volumeItem = await createNewVolumeFromVolume(volumeItem, instance.Placement!.AvailabilityZone!, callback)
-      logger.info(`Volume item: ${JSON.stringify(volumeItem)}`)
-    }
-    await attachVolume(volumeItem, instance, callback)
-    await mountVolume(instance.InstanceId!, callback)
-    callback(null, 'EC2 machine has been correctly provisioned')
   } catch (error) {
     logger.error(`Error thrown, publishing to SNS and invoking the callback ${JSON.stringify(error)}`)
     await publishErrorToSNS(instanceId, volumeItem)
@@ -67,6 +70,21 @@ async function getVolumeData(id: string) {
   let data = await ec2.describeVolumes(params).promise()
   logger.info(`Response from describeVolumes: ${JSON.stringify(data)}`)
   return data.Volumes![0]
+}
+
+async function detachVolume(volumeItem, callback) {
+  try {
+    const params = {
+      VolumeId: volumeItem.volumeId
+    }
+    logger.info(`Parameters sent to detachVolume: ${JSON.stringify(params)}`)
+    let response = await ec2.detachVolume(params).promise()
+    logger.info(`Response from detachVolume: ${JSON.stringify(response)}`)
+  } catch (error) {
+    logger.error(`Error received from sendCommand: ${JSON.stringify(error)}`)
+    await publishErrorToSNS(volumeItem.volumeId)
+    callback(error, null)
+  }
 }
 
 async function attachVolume(volumeItem, instance, callback) {

@@ -16,6 +16,12 @@ mockAttachVolume.mockReturnValue({
   promise: mockAttachPromise
 })
 
+let mockDetachVolume = jest.fn()
+let mockDetachPromise = jest.fn()
+mockDetachVolume.mockReturnValue({
+  promise: mockDetachPromise
+})
+
 let mockSNSPublish = jest.fn()
 let mockPublishPromise = jest.fn()
 mockSNSPublish.mockReturnValue({
@@ -51,6 +57,7 @@ jest.mock('aws-sdk', () => {
     EC2: () => {
       return {
         attachVolume: mockAttachVolume,
+        detachVolume: mockDetachVolume,
         createSnapshot: mockCreateSnapshot,
         createVolume: mockCreateVolume,
         describeInstances: mockDescribeInstances,
@@ -97,14 +104,12 @@ describe('When receiving an event from SNS', () => {
   let context = contextFactory();
   let callback = jest.fn()
   beforeEach(() => {
+    jest.clearAllMocks()
     event = snsEventRecordFactory()
-    mockGetItem.mockClear()
     mockGetItem.mockReturnValue(Promise.resolve(mockGetItemFactory()))
-    mockUpdateItem.mockClear()
     mockUpdateItem.mockReturnValue(Promise.resolve(mockGetItemFactory()))
     mockVolumesPromise.mockReturnValue(Promise.resolve(mockDescribeVolumesFactory()))
     mockInstancesPromise.mockReturnValue(Promise.resolve(MOCK_DESCRIBE_INSTANCES))
-    mockSNSPublish.mockClear()
     mockAttachPromise.mockReturnValue('')
     mockDescribeVolumes.mockReturnValue({
       promise: mockVolumesPromise
@@ -156,8 +161,6 @@ describe('When receiving an event from SNS', () => {
         expect(mockSNSPublish.mock.calls[0][0].TopicArn).toBe(process.env.SUPPORT_SNS_TOPIC_ARN)
       })
       it('The callback is invoked with an error', async () => {
-        callback.mockClear()
-
         await handler(event, context, callback)
 
         expect(callback.mock.calls[0][0]).not.toBe(null)
@@ -170,21 +173,44 @@ describe('When receiving an event from SNS', () => {
         expect(mockSendCommandPromise).toHaveBeenCalled()
       })
       it('The callback is invoked with no error', async () => {
-        callback.mockClear()
-
         await handler(event, context, callback)
 
         expect(callback.mock.calls[0][0]).toBe(null)
       })
     })
   })
+  describe('When the volume is still attached', () => {
+    describe('And the instance is in the same AZ', () => {
+      beforeEach(() => {
+        mockVolumesPromise.mockReturnValueOnce(Promise.resolve(mockDescribeVolumesFactory('ap-southeast-1a', 'in-use')))
+        mockSnapshotPromise.mockReturnValueOnce(Promise.resolve({SnapshotId: 'snap-066877671789bd71b'}))
+        mockVolumePromise.mockReturnValue(Promise.resolve({VolumeId: 'newVolume'}))
+      })
+      it('We issue a call to detach the current master volume', async () => {
+        await handler(event, context, callback)
+
+        expect(mockDetachPromise).toHaveBeenCalled()
+      })
+    })
+    describe('And the instance is not in the same AZ', () => {
+      beforeEach(() => {
+        mockVolumesPromise.mockReturnValueOnce(Promise.resolve(mockDescribeVolumesFactory('ap-southeast-1b', 'in-use')))
+        mockSnapshotPromise.mockReturnValueOnce(Promise.resolve({SnapshotId: 'snap-066877671789bd71b'}))
+        mockVolumePromise.mockReturnValue(Promise.resolve({VolumeId: 'newVolume'}))
+      })
+      it('We do not issue a call to detach the current master volume', async () => {
+        await handler(event, context, callback)
+
+        expect(mockDetachPromise).not.toHaveBeenCalled()
+      })
+    })
+
+  })
   describe('When the instance and volume are in different AZs', () => {
     beforeEach(() => {
       mockVolumesPromise.mockReturnValueOnce(Promise.resolve(mockDescribeVolumesFactory('ap-southeast-1b')))
       mockSnapshotPromise.mockReturnValueOnce(Promise.resolve({SnapshotId: 'snap-066877671789bd71b'}))
       mockVolumePromise.mockReturnValue(Promise.resolve({VolumeId: 'newVolume'}))
-      mockAttachPromise.mockClear()
-      mockWaitFor.mockClear()
     })
     it('We issue a call to snapshot the current master volume', async () => {
       await handler(event, context, callback)
@@ -193,8 +219,6 @@ describe('When receiving an event from SNS', () => {
     })
     describe('If the master volume cannot be found', () => {
       beforeEach(() => {
-        mockCreateVolume.mockClear()
-        mockDescribeVolumes.mockClear()
         mockDescribeVolumes.mockRejectedValue('')
       })
       it('We create a volume from the last snapshot taken', async () => {
@@ -291,7 +315,7 @@ function snsEventRecordFactory(): SNSEvent {
 
 const fakeDevice = 'fakeDevice'
 
-function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a') {
+function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a', status: string = 'available') {
   return {
     NextToken: '',
     Volumes: [
@@ -310,7 +334,7 @@ function mockDescribeVolumesFactory(az: string = 'ap-southeast-1a') {
         CreateTime: 'fakeTime',
         Size: 8,
         SnapshotId: 'snap-1234567890abcdef0',
-        State: 'in-use',
+        State: status,
         VolumeId: 'vol-049df61146c4d7901',
         VolumeType: 'standard'
       }

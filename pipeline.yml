@@ -159,7 +159,7 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM
                 RoleArn: !GetAtt ECSPipelineIAMRole.Arn
                 StackName: ecsInfrastructure
-                TemplateConfiguration: !Join ['', ['SourceCode::', !Ref Environment, '.json']]
+                TemplateConfiguration: !Join ['', ['SourceCode::', !Ref Environment, '-parameters.json']]
                 TemplatePath: SourceCode::infrastructure.yml
               InputArtifacts:
                 -

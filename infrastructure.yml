@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: ECS Infrastructure
 
+Parameters:
+  Hostname:
+    Type: String
+
 Resources:
   EC2IAMRole:
     Type: AWS::IAM::Role
@@ -209,7 +213,7 @@ Resources:
   route53RS:
     Type: AWS::Route53::RecordSet
     Properties:
-      Name: sandbox.austal.io
+      Name: !Ref Hostname
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName

@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "Hostname",
+    "ParameterValue": "test.austal.io"
+  },
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "test"
+  }
+]

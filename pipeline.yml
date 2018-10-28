@@ -8,6 +8,12 @@ Parameters:
     Default: ecsPipelineServiceRole
     Description: The name of the IAM Role
 
+  Environment:
+    Type: String
+
+  Hostname:
+    Type: String
+
 Resources:
   PipelineIAMPolicy:
     Type: AWS::IAM::Policy
@@ -153,6 +159,7 @@ Resources:
                 Capabilities: CAPABILITY_NAMED_IAM
                 RoleArn: !GetAtt ECSPipelineIAMRole.Arn
                 StackName: ecsInfrastructure
+                TemplateConfiguration: !Join ['', ['SourceCode::', !Ref Environment, '.json']]
                 TemplatePath: SourceCode::infrastructure.yml
               InputArtifacts:
                 -
@@ -174,3 +181,9 @@ Resources:
               OutputArtifacts:
                 - Name: BuildOutput
           Name: Pipeline
+
+Outputs:
+  CodeCommitHttpsCloneUrl:
+    Export:
+      Name: !Join ['-', [!Ref 'AWS::StackName', 'CodeCommitHttpsCloneUrl']]
+    Value: !GetAtt CodeCommitRepository.CloneUrlHttp

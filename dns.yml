@@ -2,13 +2,20 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: ECS Infrastructure
 
+Parameters:
+  Hostname:
+    Type: String
+
+  Environment:
+    Type: String
+
 Resources:
   HostedZone:
     Type: AWS::Route53::HostedZone
     Properties:
-      Name: sandbox.austal.io
+      Name: !Ref Hostname
       HostedZoneConfig:
-        Comment: My hosted zone for sandbox.austal.io
+        Comment: My hosted zone ECS
 
 Outputs:
   HostedZone:

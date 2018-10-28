@@ -1,0 +1,10 @@
+[
+  {
+    "ParameterKey": "Hostname",
+    "ParameterValue": "austal.io"
+  },
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "production"
+  }
+]

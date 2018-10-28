@@ -1,10 +1,10 @@
 [
   {
-    "ParameterKey": "Hostname",
-    "ParameterValue": "test.austal.io"
-  },
-  {
     "ParameterKey": "Environment",
     "ParameterValue": "test"
+  },
+  {
+    "ParameterKey": "Hostname",
+    "ParameterValue": "test.austal.io"
   }
 ]

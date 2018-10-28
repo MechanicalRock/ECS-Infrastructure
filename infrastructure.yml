@@ -6,9 +6,6 @@ Parameters:
   Hostname:
     Type: String
 
-  Environment:
-    Type: String
-
 Resources:
   EC2IAMRole:
     Type: AWS::IAM::Role

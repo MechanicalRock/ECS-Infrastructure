@@ -2,7 +2,7 @@
 
 ## Deployment
 
-  1. Create the parameter file for your environment, (see `sandbox.json` for the required parameters)
+  1. Create the parameter files for your environment, (see `sandbox.json` and `sandbox-parameters.json` for the required parameters)
   1. Run:
     `./deploy.sh <environment name> <aws profile name>`
   1. Once that completes, run:

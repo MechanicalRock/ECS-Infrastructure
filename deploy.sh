@@ -15,7 +15,6 @@ fi
 
 if [[ $(echo ${STACKS}) == *ecsInfrastructurePipeline* ]]; then
   aws cloudformation create-change-set --stack-name ecsInfrastructurePipeline --change-set-name pipeline-change-set --change-set-type UPDATE --template-body file://pipeline.yml --parameters file://$1.json --capabilities CAPABILITY_NAMED_IAM  --profile $2
-  aws cloudformation wait change-set-create-complete --stack-name ecsInfrastructurePipeline --change-set-name pipeline-change-set --profile $2
   if [[ $(aws cloudformation describe-change-set --stack-name ecsInfrastructurePipeline --change-set-name pipeline-change-set --profile $2 | grep "Changes") != *[]* ]]; then
     aws cloudformation update-stack --stack-name ecsInfrastructurePipeline --template-body file://pipeline.yml --parameters file://$1.json --capabilities CAPABILITY_NAMED_IAM --profile $2
     aws cloudformation wait stack-update-complete --stack-name ecsInfrastructurePipeline --profile $2

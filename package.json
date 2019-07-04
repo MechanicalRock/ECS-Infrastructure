@@ -11,13 +11,16 @@
     "test:unit": "jest --no-cache --verbose",
     "test:coverage": "jest --no-cache --verbose --coverage --color true",
     "watch:unit": "jest --no-cache --verbose --watchAll",
-    "watch:coverage": "jest --no-cache --verbose --coverage --color true --watchAll"
+    "watch:coverage": "jest --no-cache --verbose --coverage --color true --watchAll",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "license": "MIT",
   "dependencies": {
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^0.0.33",
@@ -50,5 +53,6 @@
       "json",
       "node"
     ]
-  }
+  },
+  "snyk": true
 }

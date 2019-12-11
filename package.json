@@ -20,7 +20,7 @@
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
     "winston": "^3.1.0",
-    "snyk": "^1.189.0"
+    "snyk": "^1.258.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^0.0.33",

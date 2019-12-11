@@ -1,8 +1,31 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.5
+version: v1.14.0
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   SNYK-JS-LODASH-450202:
     - winston > async > lodash:
         patched: '2019-07-04T06:11:03.554Z'
+    - snyk > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > inquirer > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > snyk-config > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2019-12-11T04:32:58.443Z'
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-12-11T04:32:58.443Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-12-11T04:32:58.443Z'
